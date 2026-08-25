@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 This file ages fastest. Review quarterly. The implications for Aqua are
 the durable part.
 
@@ -31,7 +33,9 @@ still the highest-EV EVM use of this chassis.
 - Quarterly volume is billions, not tens of billions every month.
 - Protocol shares fees with solvers; `β` and consistency rules move.
 - June 30 2026: consistency metric = bid quality × settlement success.
-- DAO pool exists so teams do not post ~$750k day one. BNB-first onboard.
+- CoW onboarding/bonding terms are external and changeable. Verify the current
+  DAO-pool, supported-chain, KYC, driver, bond and reward terms directly with
+  CoW; this specification makes no BNB-first onboarding claim.
 - Full independent bond remains large. Do not plan to self-bond in 2026
   unless withholdals actually accumulate.
 

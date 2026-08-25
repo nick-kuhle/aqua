@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 The compiler should nag you. If you can add a row without touching the
 funnel, you did it wrong.
 
@@ -18,7 +20,7 @@ wire-format claim (for example “ERC-7683”) is not an integration.
 2. `MouthId` variant. Codec: foreign schema ↔ `Solution`.
 3. `EngineEvent` variant if ingest is push.
 4. Boot toggle. Off = not constructed.
-5. Submitter in `submit/` (`cow_driver` already exists as a mode).
+5. Plan a transport adapter in `submit/`; no `cow_driver` mode exists yet.
 6. Qualification backend or a new population. Do not reuse another
    mouth’s evidence.
 7. Funnel counters, console scoreboard, empty-state copy.

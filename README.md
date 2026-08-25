@@ -1,219 +1,131 @@
 # Aqua
 
-A simulation-first **intent solver** and **liquidation engine**.
+> **Specification status — 24 August 2026:** Aqua is a greenfield design, not
+> a runnable bot. This repository currently contains documentation and example
+> environment files only: there is no Rust workspace, contract, frontend,
+> deployment configuration, CI pipeline, replay fixture, binary, API, console,
+> simulator, live transport, or production capability. Commands and paths below
+> are **target architecture**, not available software. `make` intentionally
+> fails for implementation targets.
 
-One process per chain. One generic executor. One forked EVM as the arbiter of
-profit. Two intent mouths (CoW Protocol now, UniswapX next), a liquidation
-sidecar that does not wait on auctions, and a console that makes every gate
-visible.
+Aqua is specified as a simulation-first **intent solver and liquidation
+engine**. Its product boundary is user-opted intent-auction surplus and
+liquidations that maintain protocol solvency; it excludes public-mempool
+sandwiching, JIT-as-revenue, and directional token sniping.
 
-Broadcasting is disabled by default and fail-closed. Live transport exists, but
-a payload reaches a relay, a solver driver, a reactor, or a raw RPC only after
-boot arming, an independent broadcast flag, authenticated runtime mode, risk
-and inventory approval, durable nonce recovery, exact-payload simulation, and
-a per-row qualification `PASS` from at least seven continuously observed days.
+The intended design is one isolated chain cell per process, a generic atomic
+executor, a forked EVM as the final profit authority, protocol-specific intent
+adapters, isolated liquidation lanes, and an operator console. It is a
+measurement instrument allowed to trade only after independently verified
+safety, economic, transport, and qualification gates.
 
-```
-bot (Rust)                     contracts (Foundry)           console (Next.js)
-──────────                     ───────────────────           ────────────────
-intent mouths  ─────────────▶  AquaExecutor.execute()  ──▶  P/L + equity
-  CoW · UniswapX · 7683        profit-or-revert guard       mouth scoreboard
-liquidation sidecar            Balancer flash loans         live funnel
-  Morpho · Aave · oracle       searcher allowlist           risk + arming
-atomic spillover arb           coinbase bribe               qualification
-anvil fork simulation                                        chain switcher
-SQLite + REST/SSE
-```
+```text
+TARGET ARCHITECTURE — NOT IMPLEMENTED
 
-Aqua is a **measurement instrument that is allowed to trade**, not a money
-printer with a dashboard. The steady state is few opportunities surviving the
-gates. That is the system working.
-
----
-
-## Quick start
-
-```bash
-git clone --recurse-submodules <this repo> && cd aqua
-make setup
-$EDITOR .env                    # RPC URLs first; never keys in git
-
-make doctor                     # every endpoint answers
-make bot-run                    # engine + API
-make front-dev                  # console
+Rust / Alloy engine             Foundry contracts              Next.js console
+intent adapters             ->  AquaExecutor.execute()    ->  P/L + qualification
+liquidation sidecar             profit-or-revert guard         funnel + arming
+Anvil exact-payload sim         flash-loan callback             same-origin API
+state journal + reconciliation  searcher allowlist              demo mode
 ```
 
-The console works before the bot does. If the API is unreachable it renders
-generated data behind a **DEMO DATA** badge so the shape of every panel is
-visible on day one.
+## Read this first
 
-Requirements — walkthrough in [`docs/SETUP.md`](docs/SETUP.md):
+1. [`docs/CURRENT_STATE_2026.md`](docs/CURRENT_STATE_2026.md) — audited
+   project status, August 2026 market corrections, and launch gates.
+2. [`docs/BUILD_NOW.md`](docs/BUILD_NOW.md) — the deliberately narrow,
+   shadow-only vertical slice to build first.
+3. [`docs/ALLOY.md`](docs/ALLOY.md) — mandatory Rust/EVM implementation
+   standard. All EVM-facing Rust must use Alloy.
+4. [`docs/PROTOCOL_REGISTRY.md`](docs/PROTOCOL_REGISTRY.md) — required
+   code-hash-attested integration lifecycle.
+5. [`docs/SCALE.md`](docs/SCALE.md) — vertical/horizontal chain-cell, leader,
+   data, HA, and SLO model.
 
-| Tool | Version | Why |
+## Planned safety model
+
+When implemented, a value-bearing payload must not reach a solver driver,
+reactor, relay, builder, sequencer, or raw RPC until all of the following are
+true:
+
+1. the protocol/asset/oracle registry entry is reviewed and matches code and
+   proxy identity at the pinned state;
+2. the candidate passes lane-specific risk, inventory, and drawdown policy;
+3. the exact signed payload succeeds on a pinned-state Anvil fork;
+4. the fenced execution leader durably reserves the nonce before network I/O;
+5. the selected transport's simulation, privacy, target, cancellation, and
+   idempotency semantics are known;
+6. the strategy, chain, lane, artifact/config identity, and transport have
+   separate qualification evidence; and
+7. finality/reorg reconciliation records realized—not estimated—outcome.
+
+A reverted private bundle is not a blanket no-cost guarantee. Relay/builder
+behavior, raw inclusion, protocol settlement, token behavior, and transport
+semantics remain separate risks. See [`docs/RISK.md`](docs/RISK.md).
+
+## Planned opportunity surfaces
+
+| Surface | Intended role | Earliest status |
 | --- | --- | --- |
-| **Rust** | 1.90+ | engine, simulator, API (`bot/`) |
-| **Foundry** | latest | contracts; `anvil` is the simulation engine |
-| **Node.js** | 22+ | console (`frontend/`) |
-| RPC | archive-capable | live + historical state, per chain |
+| CoW solver adapter | User-opted batch-auction surplus | Shadow only, after current CoW onboarding is verified |
+| Morpho Blue / Aave V3 sidecar | Permissionless liquidation candidates | Simulation only, after registry/binding/fork fixtures |
+| UniswapX adapter | Chain-specific filler strategy with inventory and markout controls | Later; not a generic Dutch-order adapter |
+| ERC-7683 adapters | Protocol-specific cross-chain fill routes | Later; standard format alone is not settlement/finality/inventory |
+| Atomic graph arb / oracle backrun | Research and simulation candidates | No live scope until a chain-specific ordering/transport integration is proven |
 
----
+## Planned implementation stack
 
-## What it does
+| Component | Intended standard | Non-negotiable boundary |
+| --- | --- | --- |
+| Rust engine | Rust + Alloy | Typed ABI/RPC/providers/signers; no bespoke RLP or signing stack |
+| Contracts | Solidity + Foundry | Generic executor; no strategy-specific arbitrary trading functions |
+| Exact simulation | Anvil fork plus transport-specific checks | Explicit block number/hash/state identity, never silent `latest` |
+| Safety state | SQLite first, transactional HA store only when justified | Durable nonce, kill, payload and transition journal |
+| Console | Next.js, same-origin server routes | Browser never has execution keys or direct bot credentials |
 
-Aqua has three surfaces that share settlement, simulation, risk, and storage.
-They do **not** share nonce lanes, signers, or qualification clocks.
-
-| Surface | Trigger | What it optimizes | Inventory |
-| --- | --- | --- | --- |
-| **Mouth A — CoW** | Batch auction (`instance.json`) | User surplus under fairness, then gas, then revert risk | None required (AMM spill) |
-| **Mouth B — UniswapX / ERC-7683** | Dutch orders / cross-chain intents | Filler edge vs decaying price and gas | Yes (start stables + WETH) |
-| **Sidecar — liquidations** | Health factor, oracle update, new block | Seized bonus minus gas, valued in native | None (flash loan) |
-
-A fourth, dormant until a sequencer chain has a real preconfirmed-state feed:
-**atomic spillover arb** on the same DEX graph the solver already uses.
-
-### How a candidate is scored
-
-1. A mouth or sidecar proposes a `Solution` or an `Opportunity`.
-2. `RiskEngine` gates notional, base fee, inflight count, kill switch.
-3. The exact payload is replayed inside an `anvil` fork of the target chain at
-   the **pinned** state block. Automine off, so atomic batches land in one
-   block.
-4. Realised executor balance delta, minus gas and any builder payment, is the
-   recorded P/L — not an estimate. Non-native profit is valued at the same
-   pinned block or the candidate is uncertified.
-5. Only a qualified live row enters its serialized durable nonce lane. That
-   exact reserved-nonce payload is rechecked and sent.
-6. Own hashes are reconciled after finality into gross, builder/solver payment,
-   retained profit, gas, and net. Partial or incoherent inclusion is an
-   explicit incident, not a guessed win.
-
-### Why a losing payload should cost nothing
-
-`AquaExecutor` measures retained profit and reverts with
-`Unprofitable(realised, required)` below `minProfit`. A correctly simulated
-atomic private bundle that reverts should be dropped without gas. This is not
-a guarantee against relay defects, raw-mode inclusion, or a CoW win that
-reverts on chain (that last case is a **negative protocol reward**). Raw
-mode and solver submissions therefore carry extra caps. See
-[`docs/RISK.md`](docs/RISK.md).
-
----
-
-## The contract
-
-`contracts/src/AquaExecutor.sol` — one generic executor for every atomic
-strategy. Strategies are encoded off-chain as an ordered `Call[]`, so a
-strategy change never needs a redeploy.
-
-CoW Protocol settlements go through CoW’s own settlement contract. The
-executor is for sidecar liquidations, UniswapX inventory legs, flash-loan
-arb, and any interaction Aqua itself funds.
-
-Guards: `minProfit`, `blockDeadline`, `maxBaseFee`, `bribeBps`, searcher
-allowlist, transient-storage reentrancy and callback protection. Full
-surface in [`docs/CONTRACTS.md`](docs/CONTRACTS.md).
-
----
-
-## The bot
-
-Thin on purpose. EVM plumbing uses **Alloy** typed primitives, ABI bindings,
-providers and signers; Aqua audits the exact payload, state pinning, nonce and
-transport policy rather than reimplementing RLP, RPC or EIP-1559 signing.
-See [`docs/ALLOY.md`](docs/ALLOY.md).
-
-```
-bot/crates/
-  engine-core/     types, config, rpc, risk, inventory, store, qualification
-  dex-graph/       AMM edges, cycle search, pool discovery
-  sim/             anvil fork + revert decode
-  settlement/      AquaExecutor calldata
-  optimizer/       naive baseline + surplus maximizer   ← the company
-  mouth-cow/       CoW solver HTTP
-  mouth-uniswapx/  Dutch fills
-  mouth-7683/      ERC-7683 / Across (stub until phase 3)
-  sidecar-liq/     Morpho, Aave, oracle backrun
-  sidecar-arb/     atomic graph arb (dormant until a feed exists)
-  submit/          cow | uniswapx | bundle | raw
-  node/            the binary that ties the loops together
-```
-
-See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) and
-[`docs/ENGINE.md`](docs/ENGINE.md).
-
----
-
-## The console
-
-`frontend/` — detailed enough to operate from, simple enough to hand to a
-non-author. Spec in [`docs/FRONTEND.md`](docs/FRONTEND.md).
-
-The browser only talks to same-origin Next routes. Bot URLs and auth tokens
-stay server-side.
-
----
+The intended toolchain versions and future developer workflow are documented in
+[`docs/SETUP.md`](docs/SETUP.md). They cannot be run from this commit.
 
 ## Documentation
 
 | Document | Contents |
 | --- | --- |
-| [`docs/CURRENT_STATE_2026.md`](docs/CURRENT_STATE_2026.md) | Audited product status, current-market corrections, and launch gates |
+| [`docs/CURRENT_STATE_2026.md`](docs/CURRENT_STATE_2026.md) | Audited repository status, current-market corrections, launch gates |
 | [`docs/ALLOY.md`](docs/ALLOY.md) | Mandatory Rust EVM implementation boundary |
 | [`docs/SCALE.md`](docs/SCALE.md) | Chain-cell scaling, HA, backpressure and SLOs |
 | [`docs/PROTOCOL_REGISTRY.md`](docs/PROTOCOL_REGISTRY.md) | Attested protocol/asset/oracle integration lifecycle |
-| [`docs/SETUP.md`](docs/SETUP.md) | Toolchains, `.env`, `make doctor` |
-| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Wiring, layout, how a chain is added |
-| [`docs/ENGINE.md`](docs/ENGINE.md) | Loops, types, funnel |
-| [`docs/OPTIMIZER.md`](docs/OPTIMIZER.md) | Surplus maximizer, naive baseline, math contract |
-| [`docs/MOUTHS.md`](docs/MOUTHS.md) | CoW, UniswapX, ERC-7683 |
-| [`docs/SIDECAR.md`](docs/SIDECAR.md) | Liquidations and oracle-update backruns |
-| [`docs/STRATEGIES.md`](docs/STRATEGIES.md) | Every opportunity row: now, next, later, watch |
-| [`docs/DEX.md`](docs/DEX.md) | Graph, edges, adding an AMM |
-| [`docs/CONTRACTS.md`](docs/CONTRACTS.md) | `AquaExecutor` |
-| [`docs/FRONTEND.md`](docs/FRONTEND.md) | Console IA, every panel |
-| [`docs/RISK.md`](docs/RISK.md) | Fail-closed broadcast, guards, known limits |
-| [`docs/QUALIFICATION.md`](docs/QUALIFICATION.md) | Per-row `PASS` / `FAIL` / `INSUFFICIENT SAMPLE` |
-| [`docs/CONFIG.md`](docs/CONFIG.md) | Annotated environment |
-| [`docs/CHAINS.md`](docs/CHAINS.md) | Ethereum, Base, BNB, Arbitrum, how to add one |
-| [`docs/ADDING.md`](docs/ADDING.md) | Add a mouth, a strategy, an AMM, a chain |
-| [`docs/BUILD_NOW.md`](docs/BUILD_NOW.md) | What is buildable on day one |
-| [`docs/ROADMAP.md`](docs/ROADMAP.md) | Phases 0–5, kill gates |
-| [`docs/FUTURE.md`](docs/FUTURE.md) | Landscape-aware future scope |
-| [`docs/LANDSCAPE.md`](docs/LANDSCAPE.md) | What is shifting and what that implies |
-| [`docs/SIM_TO_LIVE.md`](docs/SIM_TO_LIVE.md) | Arming order |
-| [`docs/PATH_TO_LIVE.md`](docs/PATH_TO_LIVE.md) | In-the-room runbook |
-| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | systemd, Docker, metrics, alerts |
-| [`docs/TESTING.md`](docs/TESTING.md) | Unit, fork, tape tests |
-| [`docs/MAINTAINING.md`](docs/MAINTAINING.md) | Mindset, change patterns, footguns |
-| [`docs/DAY0_RUNBOOK.md`](docs/DAY0_RUNBOOK.md) | First production host |
+| [`docs/BUILD_NOW.md`](docs/BUILD_NOW.md) | First build cut and explicit exclusions |
+| [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Target wiring, crates, loops, cells |
+| [`docs/ENGINE.md`](docs/ENGINE.md) | Target types, funnel, lanes, API and transport records |
+| [`docs/OPTIMIZER.md`](docs/OPTIMIZER.md) | Solver objectives and deterministic baseline contract |
+| [`docs/MOUTHS.md`](docs/MOUTHS.md) | CoW, UniswapX, and cross-chain adapter requirements |
+| [`docs/SIDECAR.md`](docs/SIDECAR.md) | Liquidation/oracle candidate design |
+| [`docs/STRATEGIES.md`](docs/STRATEGIES.md) | Opportunity surface and product exclusions |
+| [`docs/DEX.md`](docs/DEX.md) | Graph/edge design and AMM integration rules |
+| [`docs/CONTRACTS.md`](docs/CONTRACTS.md) | Target `AquaExecutor` contract surface |
+| [`docs/RISK.md`](docs/RISK.md) | Fail-closed execution and incident boundaries |
+| [`docs/QUALIFICATION.md`](docs/QUALIFICATION.md) | Per-row qualification specification |
+| [`docs/CONFIG.md`](docs/CONFIG.md) | Target environment/configuration schema |
+| [`docs/CHAINS.md`](docs/CHAINS.md) | Per-chain capability and rollout rules |
+| [`docs/ADDING.md`](docs/ADDING.md) | Required work for any integration or row |
+| [`docs/ROADMAP.md`](docs/ROADMAP.md) | Phases and kill gates |
+| [`docs/TESTING.md`](docs/TESTING.md) | Required unit, fork, tape, failure and restore tests |
+| [`docs/FRONTEND.md`](docs/FRONTEND.md) | Operator-console specification |
+| [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) | Future deployment/operations design |
+| [`docs/DAY0_RUNBOOK.md`](docs/DAY0_RUNBOOK.md) | Future first-host runbook |
+| [`docs/MAINTAINING.md`](docs/MAINTAINING.md) | Change discipline and footguns |
+| [`docs/LANDSCAPE.md`](docs/LANDSCAPE.md) | Dated external market observations |
+| [`docs/FUTURE.md`](docs/FUTURE.md) | Explicit later scope |
+| [`docs/SIM_TO_LIVE.md`](docs/SIM_TO_LIVE.md) | Future arming sequence |
+| [`docs/PATH_TO_LIVE.md`](docs/PATH_TO_LIVE.md) | Future operator checklist |
 
----
+## Status and next milestone
 
-## Status
+No lane is eligible for live execution, qualification, or a production claim.
+The first credible milestone is a **shadow-only** vertical slice: Alloy
+read client with block/hash pinning, deterministic V2 baseline fixtures,
+`AquaExecutor` tests, exact-payload Anvil fork simulation, a durable safety
+journal, and a CoW adapter only after current onboarding terms are confirmed.
 
-This repository is the **specification and operating system** for a greenfield
-build. Implementation follows [`docs/ROADMAP.md`](docs/ROADMAP.md) and
-[`docs/BUILD_NOW.md`](docs/BUILD_NOW.md).
-
-Until code exists, treat every live default as off. When code exists, keep
-those defaults off until an operator arms them.
-
-Current intended live candidates (once built and qualified):
-
-- Mouth A: CoW batch solver (first chain selected only after current CoW onboarding terms are verified)
-- Sidecar: Morpho Blue liquidations, Aave V3 liquidations
-- Sidecar: oracle-update backruns on L1, once a bundle path is wired
-
-Explicitly later: UniswapX, ERC-7683, Base Flashblocks arb, additional AMMs,
-additional lending protocols, additional chains.
-
-Explicitly out of scope: public-mempool sandwiching, JIT-as-a-product,
-buy-and-hold new-token sniping. See [`docs/STRATEGIES.md`](docs/STRATEGIES.md)
-and [`docs/LANDSCAPE.md`](docs/LANDSCAPE.md).
-
----
-
-Aqua extracts value only from (1) surplus users opted into via intent auctions
-and (2) liquidation bonuses that keep lending solvent. That is a product
-decision, not a missing feature.
+See [`docs/ROADMAP.md`](docs/ROADMAP.md) for the build order. No example
+configuration is a license to arm execution.

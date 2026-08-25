@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 August 2026. This is the honest cut of Aqua that a small team can ship
 without waiting on a protocol, a bond, or a research result.
 
@@ -55,7 +57,7 @@ operator promise. See [`CURRENT_STATE_2026.md`](CURRENT_STATE_2026.md).
 ## Designed now, implemented later (do not fake them)
 
 These are **real** 2026 markets. They are not day-one code. The types and
-empty crates exist so month-four work does not rewrite the engine.
+the target module boundaries are documented so month-four work does not rewrite the engine.
 
 | Slice | Why not day one | What you freeze now |
 | --- | --- | --- |

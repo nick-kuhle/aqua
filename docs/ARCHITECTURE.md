@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 ```
  CoW instance.json ─┐
  UniswapX orders  ──┤
@@ -149,7 +151,7 @@ win field-by-field, so a chain without a profile is fully env-driven.
 
 | Chain | Id | Role in v1 | Submission | Qualification backend |
 | --- | --- | --- | --- | --- |
-| BNB | 56 | First CoW production | CoW driver (DAO pool) | solver-auction |
+| BNB | 56 | Candidate only; verify current CoW terms | CoW driver only if current onboarding grants it | solver-auction |
 | Ethereum | 1 | Sidecar liquidations; CoW later | bundle + CoW driver | relay + solver-auction |
 | Base | 8453 | CoW after BNB; sidecar after ETH evidence; Flashblocks later | raw / CoW driver | sequencer |
 | Arbitrum | 42161 | CoW after Base | raw / CoW driver | sequencer |

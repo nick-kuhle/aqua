@@ -2,13 +2,15 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 The optimizer is the company. Settlement, risk, and the console exist so a
 correct optimizer can trade. If this crate cannot beat a naive AMM router
 on a frozen tape, Aqua is not a solver.
 
-This crate has **no RPC**. A `GraphSnapshot` and an `Auction` (or `Order`)
-go in. A `Solution` comes out. Deterministic. CI can replay a year of
-tapes without a node.
+The planned crate must have **no RPC**. A `GraphSnapshot` and an `Auction` (or
+`Order`) will go in; a deterministic `Solution` will come out. Once fixtures
+and CI exist, replay must not require a node.
 
 ---
 
@@ -136,7 +138,7 @@ settlement success). Repeated win-and-fail is how a solver goes negative.
 
 ## Tape tests
 
-`replay/cow-batches/` holds redacted historical auctions.
+The future `replay/cow-batches/` directory will hold redacted historical auctions; it is empty today.
 
 ```text
 cargo test -p optimizer -- --ignored   # optional long tape

@@ -2,9 +2,11 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
-The binary is `aqua`. It runs two loops in one process, one chain at a
-time. This document is the type-level contract. Mouths and sidecars are
-consumers of it.
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
+The planned binary name is `aqua`. When implemented, it will run two loops in
+one process, one chain at a time. This document is the target type-level
+contract; no binary, mouths, or sidecars exist yet.
 
 ---
 

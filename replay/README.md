@@ -1,11 +1,17 @@
-# replay/
+# `replay/` — planned deterministic fixtures
 
-Frozen fixtures. No live RPC in CI.
+> **Not implemented.** There are no committed CoW auction tapes, liquidation
+> windows, or replay runner at commit `6c64e12`.
 
+The intended future layout is:
+
+```text
+cow-batches/     redacted, versioned CoW auction fixtures for baseline comparison
+liq-windows/     oracle/health-factor/reorg fixtures for candidate replay
 ```
-cow-batches/     redacted CoW instance.json tapes — optimizer vs naive
-liq-windows/     oracle + health-factor fixtures
-```
 
-`make tape` is blocking when `optimizer/` changes. Refresh monthly.
-See `docs/OPTIMIZER.md` and `docs/TESTING.md`.
+Fixtures must be sanitized, provenance-tagged, pinned to state identity, and
+usable without live RPC in CI. `make tape` does not exist yet; it will become a
+blocking check for optimizer changes only after the workspace and fixtures are
+implemented. See [`docs/OPTIMIZER.md`](../docs/OPTIMIZER.md) and
+[`docs/TESTING.md`](../docs/TESTING.md).

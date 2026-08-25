@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 Development finishes before a soak begins. They are different jobs.
 
 | | Owner | Question | Exit |
@@ -87,7 +89,7 @@ Only if Phase 3 has a payout **or** sidecar nets > gas.
 - [ ] Register Aave/Morpho on Base
 - [ ] Flashblocks ingest with `state_id`; searcher-tx-only backrun
 - [ ] Aerodrome volatile edges behind a flag
-- [ ] ERC-7683 stub → real adapter if inventory exists
+- [ ] Protocol-specific ERC-7683 adapter only after route inventory and finality/settlement memo exist
 
 ---
 

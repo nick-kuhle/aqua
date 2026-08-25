@@ -1,8 +1,9 @@
 # Alloy implementation standard
 
-**Status: mandatory for new Rust EVM code — 24 August 2026.** Aqua is a
-specification-only repository today. This document is the implementation
-contract for the Rust workspace described in [`ARCHITECTURE.md`](ARCHITECTURE.md).
+**Status: mandatory target standard for new Rust EVM code — 24 August 2026.**
+No Rust code exists in this repository today. This document is the
+implementation contract for the future workspace described in
+[`ARCHITECTURE.md`](ARCHITECTURE.md).
 
 Aqua must use Alloy, not handwritten JSON-RPC, RLP, EIP-1559 signing, ABI
 encoding, or an `ethers-rs` compatibility layer. `ethers-rs` is deprecated in

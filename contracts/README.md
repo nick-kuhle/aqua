@@ -1,12 +1,20 @@
-# contracts/
+# `contracts/` — planned Foundry project
 
-Foundry. One contract on the atomic path: `AquaExecutor.sol`.
+> **Not implemented.** This directory contains no Foundry configuration,
+> Solidity source, tests, artifacts, deployment script, or ABI at commit
+> `6c64e12`. The statements below are a contract specification, not deployed
+> functionality.
 
-CoW and UniswapX use their own settlement/reactor. Do not wrap them
-unless Aqua is funding a leg.
+The intended atomic-path contract is `AquaExecutor.sol`. CoW and UniswapX
+settlement/reactor contracts remain external protocol integrations; Aqua should
+not wrap them unless it is explicitly funding an atomic leg and the route has a
+reviewed registry entry.
 
-`foundry.toml`: solc 0.8.26, Cancun, `bytecode_hash = "none"`.
-`script/compile-check.js` emits deterministic ABI + runtime hex the bot
-embeds. CI fails on drift.
+The target Foundry configuration is Solidity 0.8.26, Cancun, and
+`bytecode_hash = "none"`. A future `compile-check` should produce deterministic
+ABI/runtime artifacts consumed by typed Alloy bindings, and CI should reject
+unexpected runtime drift.
 
-See `docs/CONTRACTS.md`.
+See [`docs/CONTRACTS.md`](../docs/CONTRACTS.md),
+[`docs/PROTOCOL_REGISTRY.md`](../docs/PROTOCOL_REGISTRY.md), and
+[`docs/TESTING.md`](../docs/TESTING.md).

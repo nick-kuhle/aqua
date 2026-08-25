@@ -2,13 +2,15 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 The sidecar is how Aqua makes (or loses) money while Mouth A is still in
 shadow. It does not wait on KYC, auctions, or inventory.
 
 It is **not** a second engine. It shares `AquaExecutor`, the anvil fork,
 the DEX graph, valuation, risk *parameters*, storage, and the console. It
-has its own signer, nonce lane, smoke budget, drawdown, and qualification
-rows.
+will have its own signer, nonce lane, smoke budget, drawdown, and
+qualification rows.
 
 Isolation pattern: the same polarity as any lane whose failure mode must
 not contaminate solver submissions.

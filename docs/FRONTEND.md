@@ -2,12 +2,15 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
-The frontend is the operator’s instrument. It is highly detailed and
-still easy: one screen per question, obvious arming polarity, no
-blended APY, demo data that cannot be mistaken for live.
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
-Stack: Next.js, same-origin proxies, injected wallet only for contract
-admin (allowlist, sweep, deploy). The bot signs. The browser does not.
+The planned frontend is the operator’s instrument: one screen per question,
+obvious arming polarity, no blended APY, and demo data that cannot be mistaken
+for live.
+
+Target stack: Next.js, same-origin proxies, injected wallet only for contract
+admin (allowlist, sweep, deploy). The planned execution leader signs; the
+browser must not.
 
 ---
 

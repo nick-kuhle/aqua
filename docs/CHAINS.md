@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 One process per chain. One env file, port, database, systemd instance
 (`aqua@bnb`, `aqua@ethereum`, `aqua@base`). Qualification clocks never
 couple.
@@ -13,7 +15,7 @@ couple.
 | `CHAIN_ID` | Name | sequencer_only | v1 job |
 | --- | --- | --- | --- |
 | 1 | Ethereum | no | Sidecar; CoW later |
-| 56 | BNB | no (public mempool exists; CoW still primary) | First CoW production |
+| 56 | BNB | no (public mempool exists; CoW may be considered) | Candidate only; verify current CoW terms |
 | 8453 | Base | yes | CoW after BNB; Flashblocks later |
 | 42161 | Arbitrum | yes | CoW after Base; Timeboost later |
 

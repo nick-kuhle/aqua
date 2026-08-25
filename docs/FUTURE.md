@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 Things Aqua is shaped to absorb without a rewrite, and things it will
 refuse. This is not a promise to build them. Each item needs a memo and
 a tape (or a TVL print) before a crate.
@@ -10,7 +12,7 @@ a tape (or a TVL print) before a crate.
 
 ## Mouths
 
-| Item | Shape already in the code | Gate |
+| Item | Target shape in this specification | Gate |
 | --- | --- | --- |
 | UniswapX | `mouth-uniswapx`, `Order`, `Objective::Filler` | Mouth A staging + tape > naive |
 | ERC-7683 / Across | `mouth-7683`, `Intent7683` | Inventory exists; exotic route book |
@@ -65,7 +67,7 @@ before starting the next.
 - Multi-tag compare (this soak vs last)
 - Operator-entered weekly COW vs protocol Dune (manual is v1)
 - Mouth B inventory UI
-- Mobile go-live wizard (already specified to work at 390px)
+- Mobile go-live wizard (specified to work at 390px)
 
 Not: a consumer trading terminal, charts as a product, social.
 

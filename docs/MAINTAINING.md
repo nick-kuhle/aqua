@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 How the codebase thinks. Permanent. Roadmap phases get deleted when they
 ship; anything that turned out to be a durable rule is folded here
 first.
@@ -97,8 +99,7 @@ When you change funnel units, assert the snapshot.
 
 ## 6. Landscape
 
-[`LANDSCAPE.md`](LANDSCAPE.md) is the quarterly. Implications that have
-already landed here: intents over mempool, CoW first, Morpho tail,
+[`LANDSCAPE.md`](LANDSCAPE.md) is the quarterly. Implications adopted by this specification: intents over mempool, CoW first, Morpho tail,
 Flashblocks as state not mempool, no sandwiches.
 
 ---

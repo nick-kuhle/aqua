@@ -1,26 +1,28 @@
-# bot/
+# `bot/` — planned Rust workspace
 
-Thin Rust engine (not implemented at this commit). Workspace layout is in
-`docs/ARCHITECTURE.md`. All EVM-facing code uses Alloy per `docs/ALLOY.md`;
-`optimizer` remains provider-, signer- and transport-free.
+> **Not implemented.** This directory contains no Cargo workspace or Rust
+> source at commit `6c64e12`. The layout below is a target design only.
 
-```
+The future engine will use Alloy for every EVM-facing concern, following
+[`docs/ALLOY.md`](../docs/ALLOY.md). The optimizer must remain deterministic
+and provider-, signer-, transport-, wall-clock-, and secret-free.
+
+```text
 crates/
-  engine-core/      types, config, rpc, risk, inventory, store, qualification
-  dex-graph/        Edge, V2/V3 caches, cycle search
-  sim/              anvil fork
-  settlement/       AquaExecutor calldata
-  optimizer/        no RPC — the company
-  mouth-cow/
-  mouth-uniswapx/
-  mouth-7683/       stub until phase 3
-  sidecar-liq/
-  sidecar-arb/
-  submit/
-  node/             bin aqua
+  engine-core/      types, config, Alloy boundary, risk, inventory, store, qualification
+  dex-graph/        pure V2/V3 snapshot edges and cycle search
+  sim/              pinned Anvil fork execution
+  settlement/       typed AquaExecutor calldata
+  optimizer/        pure baseline and surplus/fill optimization
+  mouth-cow/        CoW adapter
+  mouth-uniswapx/   chain-specific UniswapX adapter
+  mouth-7683/       protocol-specific cross-chain adapters, later
+  sidecar-liq/      Morpho/Aave candidate builders
+  sidecar-arb/      research-only atomic graph candidates
+  submit/           transport-specific submission/reconciliation
+  node/             composition root and chain-cell binary
 ```
 
-Crate graph: `optimizer` does not depend on `rpc`. Mouths do not depend
-on each other. Sidecar does not import Mouth A.
-
-Start here: `docs/BUILD_NOW.md`, `docs/ENGINE.md`, `docs/OPTIMIZER.md`.
+The intended dependency graph is in [`docs/ARCHITECTURE.md`](../docs/ARCHITECTURE.md),
+scaling/leadership rules in [`docs/SCALE.md`](../docs/SCALE.md), and the first
+build cut in [`docs/BUILD_NOW.md`](../docs/BUILD_NOW.md).

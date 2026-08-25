@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 A mouth is how Aqua hears intents and how it answers them. Internally the
 engine speaks `Solution`. Each mouth is a codec plus a transport.
 
@@ -35,8 +37,8 @@ COW, plus whatever execution P&L the solver’s own inventory produces.
 3. `optimizer.solve`.
 4. Encode CoW solution JSON. v1 interactions are on-chain AMMs and
    coincident fills. Aqua-funded legs via `AquaExecutor` are v2.
-5. Do **not** write a second driver. The DAO-pool driver holds submission
-   keys at first.
+5. Do **not** write a second driver until current onboarding terms establish
+   driver ownership, submission-key custody, and the integration boundary.
 
 ### Onboarding (operator evidence, not a hard-coded launch calendar)
 

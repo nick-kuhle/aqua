@@ -2,7 +2,9 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
-One contract on the atomic path: `AquaExecutor`.
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
+The planned atomic path has one Aqua-owned contract: `AquaExecutor`. No contract exists yet.
 
 CoW settlements use CoW’s settlement contract. UniswapX fills use the
 reactor. Aqua does not wrap those in the executor unless Aqua itself is

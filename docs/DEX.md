@@ -2,6 +2,8 @@
 
 **Status: normative target specification — no implementation exists as of 24 August 2026.**
 
+**Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
+
 Strategies do not know which AMM they are trading. They consume `Edge`s.
 New venues are pricing modules, not new strategies.
 
@@ -38,8 +40,8 @@ separate on purpose.
   rewind always re-runs. Skipped blocks widen the next log window; they
   do not drop pools.
 
-Core tokens (non-WETH) from the profile stay loaded on every registered
-V2 venue so the block-cadence arb and the solver spill have a base graph
+Core tokens (non-WETH) from a future profile must be loaded on every
+registered V2 venue so the block-cadence arb and solver spill have a base graph
 before discovery catches up.
 
 ---
