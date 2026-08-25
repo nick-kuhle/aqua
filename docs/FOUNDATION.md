@@ -25,21 +25,24 @@ specifications unless an item is listed here with a path and verification.
 - `LIVE_EXECUTION=true` is accepted only as a config-validation state; it does
   not and cannot broadcast because no executor/transport exists.
 
-## Verification expected from the next development environment
+## Verified foundation checks
 
-The current sandbox lacks Rust/Cargo and Foundry, so this foundation was not
-compiled here. Before merging a feature on top of it, a developer/CI runner
-must install the pinned Rust toolchain and run:
+On 24 August 2026, this repository was verified with Rust `1.90.0`, Cargo
+`1.90.0`, and Foundry `1.7.1` (`forge`, `cast`, and `anvil`). The following
+checks passed:
 
 ```bash
 cd bot
 cargo fmt --check
 cargo clippy --workspace --all-targets -- -D warnings
-cargo test --workspace
+cargo test --workspace             # 7 unit tests passed
+cargo run -p aqua -- --help
 ```
 
-A failing compile/test is a blocker. Do not use this foundation to claim an
-operational bot.
+`forge --version` and `anvil --version` also passed. Foundry is installed, but
+there is not yet a Foundry project under `contracts/`; that is the next build
+item. A failing compile/test is a blocker. Do not use this foundation to claim
+an operational bot.
 
 ## Next approved increment
 

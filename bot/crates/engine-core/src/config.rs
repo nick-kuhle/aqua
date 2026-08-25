@@ -38,10 +38,14 @@ pub enum ConfigError {
 impl fmt::Display for ConfigError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Self::ForbiddenNamePresent(key) => write!(f, "forbidden environment name present: {key}"),
+            Self::ForbiddenNamePresent(key) => {
+                write!(f, "forbidden environment name present: {key}")
+            }
             Self::Missing(key) => write!(f, "required environment name missing: {key}"),
             Self::Invalid { key, value } => write!(f, "invalid {key}: {value}"),
-            Self::LiveAcknowledgementMissing => f.write_str("live mode requires I_UNDERSTAND_LIVE_RISK=yes"),
+            Self::LiveAcknowledgementMissing => {
+                f.write_str("live mode requires I_UNDERSTAND_LIVE_RISK=yes")
+            }
             Self::LiveBroadcastDisabled => f.write_str("live mode requires BROADCAST_ENABLED=true"),
             Self::LiveRegistryMissing => f.write_str("live mode requires PROTOCOL_REGISTRY_PATH"),
         }
@@ -58,19 +62,31 @@ impl BootConfig {
                 return Err(ConfigError::ForbiddenNamePresent(name));
             }
         }
-        let chain_id = required(values, "CHAIN_ID")?.parse().map_err(|_| ConfigError::Invalid {
+        let chain_id_raw = required(values, "CHAIN_ID")?;
+        let chain_id = chain_id_raw.parse().map_err(|_| ConfigError::Invalid {
             key: "CHAIN_ID",
-            value: required(values, "CHAIN_ID")?.to_owned(),
+            value: chain_id_raw.to_owned(),
         })?;
         let rpc_http_url = required(values, "ETH_HTTP_URL")?.to_owned();
         if !(rpc_http_url.starts_with("https://") || rpc_http_url.starts_with("http://")) {
-            return Err(ConfigError::Invalid { key: "ETH_HTTP_URL", value: rpc_http_url });
+            return Err(ConfigError::Invalid {
+                key: "ETH_HTTP_URL",
+                value: rpc_http_url,
+            });
         }
         let live = optional(values, "LIVE_EXECUTION") == Some("true");
         let broadcast_enabled = optional(values, "BROADCAST_ENABLED") == Some("true");
-        let mode = if live { ExecutionMode::Live } else { ExecutionMode::Simulation };
-        let min_net_profit_wei = parse_u256(required(values, "MIN_NET_PROFIT_WEI")?, "MIN_NET_PROFIT_WEI")?;
-        let protocol_registry_path = optional(values, "PROTOCOL_REGISTRY_PATH").map(ToOwned::to_owned);
+        let mode = if live {
+            ExecutionMode::Live
+        } else {
+            ExecutionMode::Simulation
+        };
+        let min_net_profit_wei = parse_u256(
+            required(values, "MIN_NET_PROFIT_WEI")?,
+            "MIN_NET_PROFIT_WEI",
+        )?;
+        let protocol_registry_path =
+            optional(values, "PROTOCOL_REGISTRY_PATH").map(ToOwned::to_owned);
 
         if live && optional(values, "I_UNDERSTAND_LIVE_RISK") != Some("yes") {
             return Err(ConfigError::LiveAcknowledgementMissing);
@@ -81,7 +97,14 @@ impl BootConfig {
         if live && protocol_registry_path.is_none() {
             return Err(ConfigError::LiveRegistryMissing);
         }
-        Ok(Self { chain_id, rpc_http_url, mode, broadcast_enabled, min_net_profit_wei, protocol_registry_path })
+        Ok(Self {
+            chain_id,
+            rpc_http_url,
+            mode,
+            broadcast_enabled,
+            min_net_profit_wei,
+            protocol_registry_path,
+        })
     }
 
     pub fn from_env() -> Result<Self, ConfigError> {
@@ -89,16 +112,29 @@ impl BootConfig {
     }
 }
 
-fn required<'a>(values: &'a BTreeMap<String, String>, key: &'static str) -> Result<&'a str, ConfigError> {
-    values.get(key).map(String::as_str).filter(|value| !value.is_empty()).ok_or(ConfigError::Missing(key))
+fn required<'a>(
+    values: &'a BTreeMap<String, String>,
+    key: &'static str,
+) -> Result<&'a str, ConfigError> {
+    values
+        .get(key)
+        .map(String::as_str)
+        .filter(|value| !value.is_empty())
+        .ok_or(ConfigError::Missing(key))
 }
 
 fn optional<'a>(values: &'a BTreeMap<String, String>, key: &str) -> Option<&'a str> {
-    values.get(key).map(String::as_str).filter(|value| !value.is_empty())
+    values
+        .get(key)
+        .map(String::as_str)
+        .filter(|value| !value.is_empty())
 }
 
 fn parse_u256(value: &str, key: &'static str) -> Result<U256, ConfigError> {
-    value.parse::<U256>().map_err(|_| ConfigError::Invalid { key, value: value.to_owned() })
+    value.parse::<U256>().map_err(|_| ConfigError::Invalid {
+        key,
+        value: value.to_owned(),
+    })
 }
 
 #[cfg(test)]
@@ -126,19 +162,34 @@ mod tests {
     fn forbidden_human_units_fail_boot() {
         let mut values = base();
         values.insert("MAX_BASE_FEE_GWEI".into(), "10".into());
-        assert_eq!(BootConfig::from_map(&values), Err(ConfigError::ForbiddenNamePresent("MAX_BASE_FEE_GWEI")));
+        assert_eq!(
+            BootConfig::from_map(&values),
+            Err(ConfigError::ForbiddenNamePresent("MAX_BASE_FEE_GWEI"))
+        );
     }
 
     #[test]
     fn live_needs_all_independent_gates() {
         let mut values = base();
         values.insert("LIVE_EXECUTION".into(), "true".into());
-        assert_eq!(BootConfig::from_map(&values), Err(ConfigError::LiveAcknowledgementMissing));
+        assert_eq!(
+            BootConfig::from_map(&values),
+            Err(ConfigError::LiveAcknowledgementMissing)
+        );
         values.insert("I_UNDERSTAND_LIVE_RISK".into(), "yes".into());
-        assert_eq!(BootConfig::from_map(&values), Err(ConfigError::LiveBroadcastDisabled));
+        assert_eq!(
+            BootConfig::from_map(&values),
+            Err(ConfigError::LiveBroadcastDisabled)
+        );
         values.insert("BROADCAST_ENABLED".into(), "true".into());
-        assert_eq!(BootConfig::from_map(&values), Err(ConfigError::LiveRegistryMissing));
+        assert_eq!(
+            BootConfig::from_map(&values),
+            Err(ConfigError::LiveRegistryMissing)
+        );
         values.insert("PROTOCOL_REGISTRY_PATH".into(), "registry.json".into());
-        assert_eq!(BootConfig::from_map(&values).unwrap().mode, ExecutionMode::Live);
+        assert_eq!(
+            BootConfig::from_map(&values).unwrap().mode,
+            ExecutionMode::Live
+        );
     }
 }

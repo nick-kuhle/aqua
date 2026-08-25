@@ -6,8 +6,10 @@
 specification with a deliberately tiny, non-networked Rust foundation; **not
 yet a software product**. The repository now has a Cargo workspace, typed
 primitive/risk/config code and a config-only CLI, but still has no Solidity,
-Foundry, Next.js, deployment manifests, fixtures, CI, provider, signer,
-simulator, protocol adapter, database, transport, or executable live path.
+Foundry project, Next.js app, deployment manifests, fixtures, CI, provider,
+signer, simulator, protocol adapter, database, transport, or executable live
+path. Rust 1.90, Cargo 1.90, and Foundry 1.7.1 are installed and the current
+Rust foundation fmt/clippy/unit-test suite passes.
 [`FOUNDATION.md`](FOUNDATION.md) is the authoritative implementation ledger.
 All other claims remain target architecture unless that ledger says otherwise.
 

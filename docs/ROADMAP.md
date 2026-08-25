@@ -19,7 +19,7 @@ build that produced it.
 
 ## Phase 0 — strip-shaped greenfield (days 1–10)
 
-- [x] Minimal Rust workspace, config/risk safety kernel, and config-only CLI (see `FOUNDATION.md`; uncompiled in this sandbox)
+- [x] Minimal Rust workspace, config/risk safety kernel, and config-only CLI (Rust 1.90 fmt/clippy/tests verified; see `FOUNDATION.md`)
 - [ ] Remaining repo skeleton as in `ARCHITECTURE.md`
 - [ ] `AquaExecutor` + tests + deterministic artifacts
 - [ ] engine-core: types, config, Alloy provider/binding boundary, risk, store, qualification

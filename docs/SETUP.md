@@ -18,11 +18,12 @@ without Foundry.
 
 ## Implementation status
 
-A small Rust workspace now exists, but only its non-networked foundation is
-implemented. Contracts, console, CI, provider/signing/simulation/transport
-paths and operational Make targets do not exist. Commands in this page remain
-the target developer workflow unless [`FOUNDATION.md`](FOUNDATION.md) lists
-them as implemented. Read it before onboarding or provisioning secrets.
+A small Rust workspace now exists and its non-networked foundation has passed
+Rust 1.90 fmt, clippy, and unit tests. Contracts, console, CI,
+provider/signing/simulation/transport paths and most operational Make targets
+do not yet exist. Commands in this page remain target workflow unless
+[`FOUNDATION.md`](FOUNDATION.md) lists them as implemented. Read it before
+onboarding or provisioning secrets.
 
 New Rust EVM code uses Alloy; see [`ALLOY.md`](ALLOY.md).
 

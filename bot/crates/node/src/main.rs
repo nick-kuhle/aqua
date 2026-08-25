@@ -20,8 +20,13 @@ fn doctor() {
                 ExecutionMode::Simulation => "simulation",
                 ExecutionMode::Live => "live",
             };
-            println!("OK config parsed: chain_id={}, mode={mode}", config.chain_id);
-            println!("NOT IMPLEMENTED: RPC, registry signature/code checks, Anvil, storage, and transports.");
+            println!(
+                "OK config parsed: chain_id={}, mode={mode}",
+                config.chain_id
+            );
+            println!(
+                "NOT IMPLEMENTED: RPC, registry signature/code checks, Anvil, storage, and transports."
+            );
             println!("No network request and no signing was performed.");
         }
         Err(error) => {
