@@ -3,8 +3,10 @@
 > **Not implemented.** This directory contains no Cargo workspace or Rust
 > source at commit `6c64e12`. The layout below is a target design only.
 
-The future engine will use Alloy for every EVM-facing concern, following
-[`docs/ALLOY.md`](../docs/ALLOY.md). The optimizer must remain deterministic
+The future engine is a **Rust application**. It will use the **Alloy Rust
+libraries** for every EVM-facing concern, following
+[`docs/ALLOY.md`](../docs/ALLOY.md). Alloy is a dependency inside the Rust
+engine—not a second language or service. The optimizer must remain deterministic
 and provider-, signer-, transport-, wall-clock-, and secret-free.
 
 ```text

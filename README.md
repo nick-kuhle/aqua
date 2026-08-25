@@ -77,7 +77,7 @@ semantics remain separate risks. See [`docs/RISK.md`](docs/RISK.md).
 
 | Component | Intended standard | Non-negotiable boundary |
 | --- | --- | --- |
-| Rust engine | Rust + Alloy | Typed ABI/RPC/providers/signers; no bespoke RLP or signing stack |
+| Execution engine | **Rust** application using the **Alloy Rust** libraries | Alloy supplies typed EVM ABI/RPC/providers/signers; no bespoke RLP or signing stack |
 | Contracts | Solidity + Foundry | Generic executor; no strategy-specific arbitrary trading functions |
 | Exact simulation | Anvil fork plus transport-specific checks | Explicit block number/hash/state identity, never silent `latest` |
 | Safety state | SQLite first, transactional HA store only when justified | Durable nonce, kill, payload and transition journal |

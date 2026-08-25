@@ -1,9 +1,28 @@
-# Alloy implementation standard
+# Rust and Alloy implementation standard
 
 **Status: mandatory target standard for new Rust EVM code — 24 August 2026.**
 No Rust code exists in this repository today. This document is the
 implementation contract for the future workspace described in
 [`ARCHITECTURE.md`](ARCHITECTURE.md).
+
+## Unambiguous technology decision
+
+Aqua's off-chain execution engine is a **Rust application**. **Alloy is the
+Rust Ethereum/EVM library ecosystem used inside that application**—it is not a
+replacement programming language, separate bot runtime, or smart-contract
+language. Foundry/Solidity is the separate toolchain for Aqua-owned EVM
+contracts; Next.js/TypeScript is the separate toolchain for the operator UI.
+
+| Surface | Chosen technology | Why |
+| --- | --- | --- |
+| Chain cell, optimizer, risk, simulation orchestration, API, storage, transport | Rust | predictable performance, memory/concurrency discipline, static types, deployment as one audited binary |
+| EVM types, ABI bindings, providers, transports, signing and transaction envelopes | Alloy for Rust | maintained, typed Rust-native EVM stack; avoids custom encoding/signing/RPC surface |
+| AquaExecutor and contract tests/deployment | Solidity + Foundry | native EVM contract implementation, fuzz/invariant testing and fork tooling |
+| Operator console | Next.js + TypeScript | browser/server UI boundary; never signs execution payloads |
+
+**Rule for developers:** write engine code in Rust; import Alloy crates only at
+EVM boundaries. Do not write an "Alloy service," mix `ethers-rs` into the
+workspace, or reimplement the pieces Alloy provides.
 
 Aqua must use Alloy, not handwritten JSON-RPC, RLP, EIP-1559 signing, ABI
 encoding, or an `ethers-rs` compatibility layer. `ethers-rs` is deprecated in
