@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status: normative target specification — no implementation exists as of 24 August 2026.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -19,7 +19,8 @@ build that produced it.
 
 ## Phase 0 — strip-shaped greenfield (days 1–10)
 
-- [ ] Repo skeleton as in `ARCHITECTURE.md`
+- [x] Minimal Rust workspace, config/risk safety kernel, and config-only CLI (see `FOUNDATION.md`; uncompiled in this sandbox)
+- [ ] Remaining repo skeleton as in `ARCHITECTURE.md`
 - [ ] `AquaExecutor` + tests + deterministic artifacts
 - [ ] engine-core: types, config, Alloy provider/binding boundary, risk, store, qualification
 - [ ] anvil sim, pinned block

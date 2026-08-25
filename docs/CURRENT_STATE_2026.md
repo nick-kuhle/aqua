@@ -2,12 +2,14 @@
 
 **Audit date:** 24 August 2026  
 **Repository reviewed:** `nick-kuhle/aqua`, commit `ed66d03`  
-**Verdict:** strong safety-oriented product specification; **not yet a
-software product**. The repository contains 3,300 lines of design documents,
-example environment files and a placeholder Makefile, but no Cargo workspace,
-Solidity, Foundry, Next.js, deployment manifests, fixtures, CI, or executable
-live path. Every claim that a component “exists” must therefore be read as a
-target architecture, not as implemented functionality.
+**Verdict (updated 24 August 2026):** strong safety-oriented product
+specification with a deliberately tiny, non-networked Rust foundation; **not
+yet a software product**. The repository now has a Cargo workspace, typed
+primitive/risk/config code and a config-only CLI, but still has no Solidity,
+Foundry, Next.js, deployment manifests, fixtures, CI, provider, signer,
+simulator, protocol adapter, database, transport, or executable live path.
+[`FOUNDATION.md`](FOUNDATION.md) is the authoritative implementation ledger.
+All other claims remain target architecture unless that ledger says otherwise.
 
 This document is the source of truth for the gap between the aspirational
 architecture and what can safely be represented to an operator, contributor,

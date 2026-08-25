@@ -12,6 +12,7 @@ Start here if you are new:
 
 | Doc | Use |
 | --- | --- |
+| [FOUNDATION.md](FOUNDATION.md) | Exact implemented/not-implemented ledger; only source for implementation claims |
 | [CURRENT_STATE_2026.md](CURRENT_STATE_2026.md) | Audited repository status, current-market corrections, launch gates |
 | [ALLOY.md](ALLOY.md) | Mandatory Alloy Rust EVM boundary |
 | [SCALE.md](SCALE.md) | Vertical/horizontal scaling, cell architecture, HA and SLOs |

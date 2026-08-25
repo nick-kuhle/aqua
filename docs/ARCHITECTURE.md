@@ -1,6 +1,6 @@
 # Architecture
 
-**Status: normative target specification — no implementation exists as of 24 August 2026.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
 
 **Technology decision:** the engine is written in Rust; Alloy is its Rust EVM
 library stack, not a competing language or separate service. Solidity/Foundry

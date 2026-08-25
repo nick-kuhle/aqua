@@ -1,12 +1,13 @@
 # Aqua
 
-> **Specification status — 24 August 2026:** Aqua is a greenfield design, not
-> a runnable bot. This repository currently contains documentation and example
-> environment files only: there is no Rust workspace, contract, frontend,
-> deployment configuration, CI pipeline, replay fixture, binary, API, console,
-> simulator, live transport, or production capability. Commands and paths below
-> are **target architecture**, not available software. `make` intentionally
-> fails for implementation targets.
+> **Foundation status — 24 August 2026:** Aqua is not a runnable bot. A small,
+> non-networked Rust safety kernel now exists: typed state/lane primitives,
+> fail-closed configuration parsing, deterministic risk-gate unit tests, and an
+> `aqua doctor` config-only CLI. There is still no provider, signer, contract,
+> frontend, deployment configuration, CI pipeline, replay fixture, simulator,
+> API, protocol adapter, transport, database, or production capability. See
+> [`docs/FOUNDATION.md`](docs/FOUNDATION.md) for the authoritative ledger.
+> Everything else below is **target architecture**, not available software.
 
 Aqua is specified as a simulation-first **intent solver and liquidation
 engine**. Its product boundary is user-opted intent-auction surplus and
@@ -31,7 +32,9 @@ state journal + reconciliation  searcher allowlist              demo mode
 
 ## Read this first
 
-1. [`docs/CURRENT_STATE_2026.md`](docs/CURRENT_STATE_2026.md) — audited
+1. [`docs/FOUNDATION.md`](docs/FOUNDATION.md) — exact implemented/not-
+   implemented ledger; read this before making an implementation claim.
+2. [`docs/CURRENT_STATE_2026.md`](docs/CURRENT_STATE_2026.md) — audited
    project status, August 2026 market corrections, and launch gates.
 2. [`docs/BUILD_NOW.md`](docs/BUILD_NOW.md) — the deliberately narrow,
    shadow-only vertical slice to build first.

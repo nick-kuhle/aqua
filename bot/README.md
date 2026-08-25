@@ -1,9 +1,12 @@
 # `bot/` — planned Rust workspace
 
-> **Not implemented.** This directory contains no Cargo workspace or Rust
-> source at commit `6c64e12`. The layout below is a target design only.
+> **Foundation only.** `Cargo.toml`, a Rust 1.90 pin, `engine-core`, and a
+> config-only `aqua doctor` CLI now exist. They do not construct a provider,
+> parse a private key, sign, simulate, persist, or submit anything. The layout
+> below is mostly target design; the authoritative scope is
+> [`docs/FOUNDATION.md`](../docs/FOUNDATION.md).
 
-The future engine is a **Rust application**. It will use the **Alloy Rust
+The engine is a **Rust application**. It uses the **Alloy Rust
 libraries** for every EVM-facing concern, following
 [`docs/ALLOY.md`](../docs/ALLOY.md). Alloy is a dependency inside the Rust
 engine—not a second language or service. The optimizer must remain deterministic

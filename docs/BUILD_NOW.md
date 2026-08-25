@@ -1,6 +1,6 @@
 # What is buildable now
 
-**Status: normative target specification — no implementation exists as of 24 August 2026.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -17,7 +17,9 @@ week one.
 ## Day-one binary (Phase 0–1)
 
 A compiling engine that **cannot broadcast**, plus a console that can be
-demoed on generated data.
+demoed on generated data. At present, only the non-networked config/risk
+foundation has been started; neither the engine nor console compiles yet. See
+[`FOUNDATION.md`](FOUNDATION.md).
 
 | Slice | Why it is buildable today | Scaling hook you put in now, not later |
 | --- | --- | --- |

@@ -1,10 +1,13 @@
 # Testing
 
-**Status: normative target specification — no implementation exists as of 24 August 2026.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
-Three layers. All blocking on `main`.
+The target suite has three layers. Only the small Rust foundation unit tests
+currently exist; the Foundry, frontend, tape, CI and fork suites are not yet
+implemented. See [`FOUNDATION.md`](FOUNDATION.md). All layers become blocking
+on `main` once implemented.
 
 ---
 

@@ -1,18 +1,23 @@
-# Aqua. Implementation lands under bot/, contracts/, frontend/.
-# Until then these targets fail loudly so nobody thinks a doc repo is a binary.
+# Aqua foundation. See docs/FOUNDATION.md for the only implemented scope.
 
-.PHONY: setup doctor bot-run front-dev test tape fmt help
+.PHONY: setup doctor bot-run front-dev test test-foundation tape fmt help
 
 help:
-	@echo "Aqua is specified in docs/. Implement, then wire these targets."
-	@echo "  setup      submodules + frontend deps + .env"
-	@echo "  doctor     aqua doctor"
-	@echo "  bot-run    engine + API"
-	@echo "  front-dev  console"
-	@echo "  test       cargo test --all && forge test"
-	@echo "  tape       optimizer vs naive"
-	@echo "  fmt        rustfmt + forge fmt"
-	@echo "See docs/SETUP.md and docs/BUILD_NOW.md."
+	@echo "Aqua is foundation-only: config/risk kernel + config-only doctor."
+	@echo "  doctor           validate fail-closed boot config; no network or signing"
+	@echo "  test             run implemented Rust foundation tests"
+	@echo "  fmt              format/check the implemented Rust foundation"
+	@echo "  setup bot-run front-dev tape are intentionally unavailable"
+	@echo "See docs/FOUNDATION.md and docs/BUILD_NOW.md."
 
-setup doctor bot-run front-dev test tape fmt:
-	@echo "not implemented: $@ — read docs/BUILD_NOW.md" >&2; exit 1
+doctor:
+	@cd bot && cargo run -p aqua -- doctor
+
+test test-foundation:
+	@cd bot && cargo test --workspace
+
+fmt:
+	@cd bot && cargo fmt --check
+
+setup bot-run front-dev tape:
+	@echo "not implemented: $@ — read docs/FOUNDATION.md and docs/BUILD_NOW.md" >&2; exit 1

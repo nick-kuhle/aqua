@@ -1,6 +1,6 @@
 # Setup
 
-**Status: normative target specification — no implementation exists as of 24 August 2026.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -18,11 +18,11 @@ without Foundry.
 
 ## Implementation status
 
-At commit `ed66d03` this repository is a specification: the workspace,
-contracts, console, CI and Make targets described below do not yet exist.
-Commands in this page are the target developer workflow, not commands that can
-succeed today. Read [`CURRENT_STATE_2026.md`](CURRENT_STATE_2026.md) before
-onboarding or provisioning secrets.
+A small Rust workspace now exists, but only its non-networked foundation is
+implemented. Contracts, console, CI, provider/signing/simulation/transport
+paths and operational Make targets do not exist. Commands in this page remain
+the target developer workflow unless [`FOUNDATION.md`](FOUNDATION.md) lists
+them as implemented. Read it before onboarding or provisioning secrets.
 
 New Rust EVM code uses Alloy; see [`ALLOY.md`](ALLOY.md).
 
@@ -57,16 +57,21 @@ BNB_WS_URL=...
 Never commit `.env`. Never put private keys in git. Example files contain
 names and comments only.
 
-## Doctor
+## Current foundation commands
+
+With the pinned Rust toolchain installed, the only currently implemented
+commands are deliberately non-networked:
 
 ```bash
-make doctor
-# or: cargo run --bin aqua -- doctor
+make test             # cargo test --workspace in bot/
+make fmt              # cargo fmt --check in bot/
+make doctor           # parse fail-closed config only; no RPC, signing, or send
 ```
 
-Probes HTTP, WS, chain id match, optional CoW shadow ping, anvil spawn,
-artifact hash. Prints `✗` on kill switch, missing token when bind is
-public, and forbidden legacy env names.
+`aqua doctor` currently validates required/fail-closed configuration names and
+reports that chain checks are not implemented. It does **not** probe HTTP/WS,
+spawn Anvil, inspect artifacts, contact CoW, sign, or broadcast. The prior
+developer workflow below is target-only.
 
 ## Run
 
