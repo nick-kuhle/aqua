@@ -1,5 +1,7 @@
 # Mouths
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 A mouth is how Aqua hears intents and how it answers them. Internally the
 engine speaks `Solution`. Each mouth is a codec plus a transport.
 
@@ -36,33 +38,32 @@ COW, plus whatever execution P&L the solver’s own inventory produces.
 5. Do **not** write a second driver. The DAO-pool driver holds submission
    keys at first.
 
-### Onboarding (operator, week 1)
+### Onboarding (operator evidence, not a hard-coded launch calendar)
 
-1. Local solver + open-source examples from CoW’s `solvers` crate.
-2. Shadow competition (exposed endpoint, solvers Telegram).
-3. Onboarding call: bonding pool, KYC, surplus shifting, EBBO, slippage.
-4. KYC: company incorporation, shareholder details, passports.
-5. Staging: rewards address, gas on the solving chain.
-6. Production on the next Tuesday release after staging. **BNB first.**
+1. Build the local solver against the current public OpenAPI and examples.
+2. Obtain CoW's current written confirmation of supported shadow/staging
+   environment, endpoint requirements, IP controls, driver ownership, chain
+   ordering, bond/KYC, rewards address and settlement responsibilities.
+3. Run shadow with an exposed, authenticated and monitored endpoint; preserve
+   auction/solution/notify evidence.
+4. Enter staging only with the written counterparty requirements satisfied.
+5. Make production a separate approval after the environment, driver,
+   qualification and capital gates pass.
 
-DAO pool: core team operates the driver initially. Service fee on weekly
-COW (starts after six months under current rules). A fraction of rewards
-locks toward a bond. Graduation to a self-run driver and then a full
-independent bond is later, not a 90-day goal.
+The historical DAO-pool mechanics, service fees, chain ordering, reward caps,
+quote amounts and payout cadence are commercial/protocol parameters, not Aqua
+constants. Store a dated copy of the terms with the deployment record and
+surface the chosen terms in the operator console. Do not encode them in the
+optimizer or use them to infer P/L.
 
-### Rewards Aqua must respect
+### Rewards and accounting
 
-Performance rewards are capped as a share of protocol fees the solver
-generated (`β` = 50% on Ethereum, Arbitrum, Base; 100% on smaller nets
-under current rules). Negative performance is possible.
-
-Consistency rewards (since 30 June 2026) scale with **bid quality ×
-settlement success**. Winning and reverting is how you go negative.
-
-Quote rewards exist for verified winning quotes on fill-or-kill market
-orders — `min(native, 6 COW)` per quote. Crumbs. Required for flow.
-
-Payouts: weekly, Tuesday, in COW.
+CoW's selected solution is driven by the protocol's current auction rules;
+winning settlements can still fail, have negative accounting effects, or be
+subject to later protocol accounting. Aqua records observed auction outcome,
+actual gas/inventory effects and protocol-reported payment as separate fields.
+It must not project a token reward from stale documentation or blend it with
+sidecar P/L. Re-verify current rules before every environment transition.
 
 ### Mouth A funnel extras
 
@@ -93,14 +94,22 @@ inventory and gas.
 
 ### What Aqua implements (phase 4)
 
-1. Order stream.
-2. `optimizer.score_fill` at current `t`.
-3. Fork sim of the reactor callback.
-4. Fill if `edge ≥ MIN_FILL_BPS` and inventory gate passes.
-5. Markout after finality. Negative markout trips a Mouth-B-only
-   circuit, not the sidecar.
+1. A **chain-specific** order ingress: poll first, then a monitored webhook
+   only when its delivery/replay semantics are proven.
+2. A chain-specific auction model and typed Alloy reactor/Permit2 bindings.
+   Ethereum RFQ/exclusivity, Arbitrum Dutch decay, and Base/Unichain priority
+   gas auctions are separate adapters/configurations—not one generic timer.
+3. `optimizer.score_fill` against a pinned snapshot and explicit auction state.
+4. Fork sim of the exact reactor callback and the exact signed envelope.
+5. Fill only if edge, inventory, token policy, allowance policy, nonce and
+   lane-specific transport gates pass.
+6. Reconcile fill, inventory, fees and post-finality markout. Negative markout
+   trips a Mouth-B-only circuit, not the sidecar.
 
-Start: one chain, stables + WETH, hard inventory cap. No cross-chain.
+Start: one chain, stables + WETH, hard inventory cap. No cross-chain. The
+current UniswapX auction taxonomy is documented by Uniswap.[^uniswapx]
+
+[^uniswapx]: <https://docs.uniswap.org/contracts/uniswapx/auctiontypes>.
 
 Top-of-book ETH/USDC is not the entry. Long-tail orders the desks skip
 are the entry.

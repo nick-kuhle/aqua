@@ -1,5 +1,7 @@
 # Path to live
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 One-page in-the-room runbook. Per chain, per lane. Print it.
 
 Companion: [`SIM_TO_LIVE.md`](SIM_TO_LIVE.md) (order), 

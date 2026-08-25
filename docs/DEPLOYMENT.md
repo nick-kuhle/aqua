@@ -1,5 +1,8 @@
 # Deployment
 
+
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Production is systemd or Docker Compose. One instance per chain.
 Metrics and alerts are part of the binary, not a sidecar process
 (Prometheus scrape is fine).

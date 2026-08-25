@@ -1,5 +1,7 @@
 # Maintaining Aqua
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 How the codebase thinks. Permanent. Roadmap phases get deleted when they
 ship; anything that turned out to be a durable rule is folded here
 first.

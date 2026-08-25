@@ -1,5 +1,7 @@
 # Chains
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 One process per chain. One env file, port, database, systemd instance
 (`aqua@bnb`, `aqua@ethereum`, `aqua@base`). Qualification clocks never
 couple.
@@ -37,7 +39,9 @@ every missing capability the enabled strategies wanted.
 
 ## Adding a chain
 
-1. Add a `ChainAddresses` profile **or** document a full env overlay.
+1. Add a reviewed, code-hash-attested registry manifest per
+   [`PROTOCOL_REGISTRY.md`](PROTOCOL_REGISTRY.md), then add `ChainAddresses`
+   as a derived convenience profile or document a full env overlay.
 2. Verify every address against official docs **and** a live getter
    (factory `allPairsLength`, vault `WETH`, Morpho `idToMarketParams` on
    a known id).
@@ -69,7 +73,9 @@ garbage and call it a funnel.
 
 ## BNB specifics (phase 3)
 
-- CoW onboard requires BNB first for DAO-pool solvers.
+- Do not assume a DAO-pool chain ordering. Confirm the current CoW shadow,
+  staging, driver, bond/KYC and supported-chain terms in writing before this
+  profile is made a rollout candidate.
 - DEX set is not Ethereum’s. Profile factories/routers from current
   canonical deployments; re-verify at implement time (they move).
 - Encrypted-mempool work on BNB is a landscape item. Mouth A does not

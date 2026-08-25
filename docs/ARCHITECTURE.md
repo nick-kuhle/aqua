@@ -1,5 +1,7 @@
 # Architecture
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 ```
  CoW instance.json ─┐
  UniswapX orders  ──┤
@@ -70,7 +72,7 @@ aqua/
   Makefile
   docs/                         this tree
   bot/
-    Cargo.toml                  workspace
+    Cargo.toml                  workspace; pinned Alloy dependencies
     rust-toolchain.toml
     crates/
       engine-core/
@@ -98,10 +100,11 @@ aqua/
   deploy/                       systemd, docker-compose
 ```
 
-The crate graph is deliberate. `optimizer` does not depend on `rpc`.
-`mouth-*` depend on `optimizer` and `engine-core`, not on each other.
-`sidecar-liq` does not import `mouth-cow`. Deleting a mouth crate removes
-that mouth.
+The crate graph is deliberate. `optimizer` does not depend on an RPC provider,
+signer, transport or wall clock. `mouth-*` depend on `optimizer` and
+`engine-core`, not on each other. `sidecar-liq` does not import `mouth-cow`.
+All EVM-facing crates use Alloy; the typed binding/provider boundary is
+specified in [`ALLOY.md`](ALLOY.md). Deleting a mouth crate removes that mouth.
 
 ---
 
@@ -136,6 +139,10 @@ that mouth.
 
 The engine is single-chain by construction: one `Config`, one fork, one
 store, one nonce lane per domain. A second chain is a **second process**.
+A process is a chain cell: it owns its event journal, registry snapshot, risk,
+keys and safety state. Pure search can scale behind one fenced execution leader;
+no worker other than that leader may sign or submit. Full vertical/horizontal
+scale, HA and data rules are normative in [`SCALE.md`](SCALE.md).
 
 `CHAIN_ID` selects a built-in address profile. Env `*_ADDRESS` overrides
 win field-by-field, so a chain without a profile is fully env-driven.
@@ -204,7 +211,9 @@ in simulation. The process refuses to start otherwise.
 
 ## What “thin” means
 
-- No full Ethereum node library for signing. RLP + k256, small, reviewed.
+- No bespoke Ethereum signing/RPC stack. Alloy typed bindings, envelopes and
+  signer/provider boundary are small, pinned and reviewed; Aqua owns exact
+  payload, state-pinning and transport policy. See [`ALLOY.md`](ALLOY.md).
 - No strategy-specific Solidity. `Call[]` or the foreign settlement
   contract (CoW).
 - No in-engine dashboard renderer. The console is a separate app.

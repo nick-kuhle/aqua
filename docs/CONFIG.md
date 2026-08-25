@@ -1,5 +1,7 @@
 # Configuration
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Everything is environment-driven. This is the annotated list. Defaults
 are **liberal for measurement**. Tighten before arming
 ([`RISK.md`](RISK.md)).
@@ -20,7 +22,8 @@ Forbidden names (boot error if present): `MIN_NET_PROFIT_ETH`,
 | `BASE_HTTP_URL` / `BASE_WS_URL` | | Base process |
 | `ARB_HTTP_URL` / `ARB_WS_URL` | | |
 | `FLASHBLOCKS_WS_URL` | unset | Base only, phase 4 |
-| `*_ADDRESS` | profile | Field-by-field override. See `ChainAddresses` |
+| `PROTOCOL_REGISTRY_PATH` | required for a live-capable profile | Signed, versioned, code-hash-attested manifest; no live capability without it. See `PROTOCOL_REGISTRY.md` |
+| `*_ADDRESS` | derived profile only | Field-by-field development override. It cannot override a live registry attestation. See `ChainAddresses` |
 
 ## Mouths
 
@@ -29,7 +32,7 @@ Forbidden names (boot error if present): `MIN_NET_PROFIT_ETH`,
 | `MOUTH_COW` | `true` | Construct Mouth A |
 | `COW_SOLVE_BIND` | `127.0.0.1:8081` | Solver HTTP |
 | `MOUTH_UNISWAPX` | `false` | Boot ceiling |
-| `MOUTH_7683` | `false` | |
+| `MOUTH_7683` | `false` | Protocol-specific adapter only; enabling requires settlement/finality registry and route risk memo |
 | `MIN_FILL_BPS` | `5` | Mouth B |
 | `OPT_BUDGET_MS` | `800` | CoW solve budget |
 

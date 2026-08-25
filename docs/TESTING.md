@@ -1,5 +1,7 @@
 # Testing
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Three layers. All blocking on `main`.
 
 ---
@@ -9,8 +11,10 @@ Three layers. All blocking on `main`.
 `cargo test --all`
 
 No network. Optimizer, integer AMM math, Morpho share math, risk,
-qualification snapshots, RLP, signing, funnel units, CoW JSON codecs
-against fixtures.
+qualification snapshots, Alloy primitive/typed-ABI codecs, signed-envelope
+fixtures, funnel units and CoW JSON codecs against fixtures. Do not replace
+these with handwritten RLP or signing tests; Alloy owns encoding and Aqua owns
+its payload invariants.
 
 `optimizer` crate: naive vs v1 on committed tapes. A PR that loses to
 naive on the frozen 7-day set fails.
@@ -21,7 +25,10 @@ naive on the frozen 7-day set fails.
 two-leg baseline, access control, fuzz on budget/bribe.
 
 `forge fmt --check`. Artifact job: committed runtime hex ==
-`compile-check.js` output. `AquaExecutor` size is a tracked number.
+`compile-check.js` output. `AquaExecutor` size is a tracked number. Every
+protocol write selector and custom error has a typed Alloy binding assertion
+and a pinned-fork execution test; every registry entry is checked against its
+address code hash and proxy implementation.
 
 ## 3. Frontend
 
@@ -58,5 +65,13 @@ unless the state is vendored.
 job, tape job if `optimizer/` or tapes changed. Console typecheck.
 
 A strategy PR without a funnel test is incomplete. A mouth PR without
-a codec fixture is incomplete. A math PR without a tape delta is
-incomplete.
+a codec fixture is incomplete. A math PR without a tape delta is incomplete.
+
+## Scale and failure tests
+
+Before a cell advances beyond shadow, test duplicate/out-of-order ingress,
+websocket gap + rewind, RPC disagreement/429/timeout, stale proxy code,
+process crash between nonce reservation and send, transport timeout after send,
+reorg, database restore and leader-failover fencing. The expected outcome is
+one auditable submission or no submission—not a best-effort retry. See
+[`SCALE.md`](SCALE.md) and [`PROTOCOL_REGISTRY.md`](PROTOCOL_REGISTRY.md).

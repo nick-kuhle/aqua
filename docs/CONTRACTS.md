@@ -1,5 +1,7 @@
 # Contracts
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 One contract on the atomic path: `AquaExecutor`.
 
 CoW settlements use CoW’s settlement contract. UniswapX fills use the

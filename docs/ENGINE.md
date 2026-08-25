@@ -1,5 +1,7 @@
 # Engine
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 The binary is `aqua`. It runs two loops in one process, one chain at a
 time. This document is the type-level contract. Mouths and sidecars are
 consumers of it.
@@ -14,7 +16,7 @@ Every source flattens to `EngineEvent`:
 | --- | --- | --- |
 | `Auction(Auction)` | mouth-cow HTTP | intent_loop |
 | `Order(Order)` | mouth-uniswapx stream | intent_loop |
-| `Intent7683(...)` | mouth-7683 | intent_loop (phase 3) |
+| `Intent7683(...)` | protocol-specific 7683 adapter | intent_loop (later; 7683 is a wire format, not a settlement guarantee) |
 | `Head(BlockHead)` | `newHeads` | both loops, graph refresh |
 | `Pending(PendingTx)` | mempool / sequencer / flashblocks | sidecar (oracle, optional backrun arb) |
 | `Logs(LogBatch)` | lending + factory logs | sidecar, dex discovery |
@@ -124,6 +126,19 @@ Mouth A adds auction-specific counters: `auctionsSeen`, `solutionsAccepted`,
 `wins`, `shadowWins`, `deadlineMissed`.
 
 ---
+
+## Submission transport
+
+`SubmissionMode` is a routing label, not a universal API. Each concrete
+transport records endpoint identity, auth identity, request bytes, target
+block/range, privacy/builder policy, replacement/cancellation key, simulation
+result, response and reconciliation state. At minimum distinguish CoW driver,
+private raw transaction, `eth_sendBundle`, `mev_sendBundle`, and chain-specific
+sequencer/express-lane APIs. A transport may only retry a request after its
+idempotency/cancellation semantics are known. Flashbots documents distinct
+advanced relay methods and bundle cancellation/replacement behavior.[^fb]
+
+[^fb]: <https://docs.flashbots.net/flashbots-auction/advanced/rpc-endpoint>.
 
 ## Nonce and inventory
 

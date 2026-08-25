@@ -1,6 +1,8 @@
 # bot/
 
-Thin Rust engine. Workspace layout is in `docs/ARCHITECTURE.md`.
+Thin Rust engine (not implemented at this commit). Workspace layout is in
+`docs/ARCHITECTURE.md`. All EVM-facing code uses Alloy per `docs/ALLOY.md`;
+`optimizer` remains provider-, signer- and transport-free.
 
 ```
 crates/

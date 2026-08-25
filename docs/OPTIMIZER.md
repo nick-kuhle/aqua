@@ -1,5 +1,7 @@
 # Optimizer
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 The optimizer is the company. Settlement, risk, and the console exist so a
 correct optimizer can trade. If this crate cannot beat a naive AMM router
 on a frozen tape, Aqua is not a solver.

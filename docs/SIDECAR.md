@@ -1,5 +1,7 @@
 # Liquidation sidecar
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 The sidecar is how Aqua makes (or loses) money while Mouth A is still in
 shadow. It does not wait on KYC, auctions, or inventory.
 

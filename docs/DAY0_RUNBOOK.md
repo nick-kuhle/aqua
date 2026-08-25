@@ -1,5 +1,7 @@
 # Day-0 runbook
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 First production host. Assume CI is green and a tag exists.
 
 ---

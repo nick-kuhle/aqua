@@ -1,5 +1,7 @@
 # Console
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 The frontend is the operator’s instrument. It is highly detailed and
 still easy: one screen per question, obvious arming polarity, no
 blended APY, demo data that cannot be mistaken for live.
@@ -82,7 +84,7 @@ If the bot is down: demo curve + banner. Tiles say DEMO.
 - Deadline misses
 - Fairness rejects
 - Driver: `DAO pool` | `self` — informational
-- Chain of this mouth (BNB first)
+- Chain of this mouth (selected rollout chain; show verified onboarding environment)
 
 Empty: “No auctions. Is Mouth A constructed? Is the solver URL in the
 autopilot? Shadow vs staging vs prod?”

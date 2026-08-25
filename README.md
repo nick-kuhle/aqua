@@ -118,8 +118,10 @@ surface in [`docs/CONTRACTS.md`](docs/CONTRACTS.md).
 
 ## The bot
 
-Thin on purpose. JSON-RPC, RLP, and EIP-1559 signing are small auditable
-modules rather than a provider stack, because the exact bytes we sign matter.
+Thin on purpose. EVM plumbing uses **Alloy** typed primitives, ABI bindings,
+providers and signers; Aqua audits the exact payload, state pinning, nonce and
+transport policy rather than reimplementing RLP, RPC or EIP-1559 signing.
+See [`docs/ALLOY.md`](docs/ALLOY.md).
 
 ```
 bot/crates/
@@ -156,6 +158,10 @@ stay server-side.
 
 | Document | Contents |
 | --- | --- |
+| [`docs/CURRENT_STATE_2026.md`](docs/CURRENT_STATE_2026.md) | Audited product status, current-market corrections, and launch gates |
+| [`docs/ALLOY.md`](docs/ALLOY.md) | Mandatory Rust EVM implementation boundary |
+| [`docs/SCALE.md`](docs/SCALE.md) | Chain-cell scaling, HA, backpressure and SLOs |
+| [`docs/PROTOCOL_REGISTRY.md`](docs/PROTOCOL_REGISTRY.md) | Attested protocol/asset/oracle integration lifecycle |
 | [`docs/SETUP.md`](docs/SETUP.md) | Toolchains, `.env`, `make doctor` |
 | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) | Wiring, layout, how a chain is added |
 | [`docs/ENGINE.md`](docs/ENGINE.md) | Loops, types, funnel |
@@ -195,7 +201,7 @@ those defaults off until an operator arms them.
 
 Current intended live candidates (once built and qualified):
 
-- Mouth A: CoW batch solver (first production chain: BNB)
+- Mouth A: CoW batch solver (first chain selected only after current CoW onboarding terms are verified)
 - Sidecar: Morpho Blue liquidations, Aave V3 liquidations
 - Sidecar: oracle-update backruns on L1, once a bundle path is wired
 

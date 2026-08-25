@@ -1,5 +1,7 @@
 # Setup
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 ## Toolchains
 
 | Tool | Version | Install |
@@ -12,9 +14,19 @@
 Optional: `solc` via the contracts `package.json` for `compile-check.js`
 without Foundry.
 
+## Implementation status
+
+At commit `ed66d03` this repository is a specification: the workspace,
+contracts, console, CI and Make targets described below do not yet exist.
+Commands in this page are the target developer workflow, not commands that can
+succeed today. Read [`CURRENT_STATE_2026.md`](CURRENT_STATE_2026.md) before
+onboarding or provisioning secrets.
+
+New Rust EVM code uses Alloy; see [`ALLOY.md`](ALLOY.md).
+
 ## Repo
 
-```bash
+```
 git clone --recurse-submodules <url> && cd aqua
 make setup
 ```

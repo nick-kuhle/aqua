@@ -1,5 +1,7 @@
 # Roadmap
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Development finishes before a soak begins. They are different jobs.
 
 | | Owner | Question | Exit |
@@ -17,16 +19,18 @@ build that produced it.
 
 - [ ] Repo skeleton as in `ARCHITECTURE.md`
 - [ ] `AquaExecutor` + tests + deterministic artifacts
-- [ ] engine-core: types, config, rpc, risk, store, qualification
+- [ ] engine-core: types, config, Alloy provider/binding boundary, risk, store, qualification
 - [ ] anvil sim, pinned block
 - [ ] dex-graph: V2 + V3 caches, `Edge`, cycle search
 - [ ] `optimizer::naive` + one-day CoW dump
 - [ ] `Solution` / `Auction` / `Opportunity` frozen 30 days
 - [ ] Console shell: header, demo, chain pill, overview, funnel empty
 - [ ] `make doctor`
-- [ ] Company + CoW KYC pack started
+- [ ] Protocol registry: address, ABI, code hash, verified block and source URL
+- [ ] Company + CoW KYC pack started; current environment/chain terms confirmed in writing
 
-Kill: bytecode drift job, `naive` exists, types frozen.
+Kill: bytecode drift job, `naive` exists, types frozen, Alloy binding/selector
+checks and protocol-registry verification green.
 
 ---
 

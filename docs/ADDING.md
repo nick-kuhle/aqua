@@ -1,11 +1,17 @@
 # Adding things
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 The compiler should nag you. If you can add a row without touching the
 funnel, you did it wrong.
 
 ---
 
 ## Add a mouth
+
+Before code: write a route/protocol risk memo and create the reviewed registry
+entry required by [`PROTOCOL_REGISTRY.md`](PROTOCOL_REGISTRY.md). A generic
+wire-format claim (for example “ERC-7683”) is not an integration.
 
 1. Crate `mouth-<name>/`. Depends on `engine-core` + `optimizer`. Does
    not depend on other mouths or `sidecar-liq`.

@@ -1,5 +1,7 @@
 # Opportunity surface
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Aqua’s job is to attach as many **real** opportunity rows as the
 architecture will carry, without pretending dead rows are live.
 
@@ -29,7 +31,7 @@ own `PASS`.
 | --- | --- | --- | --- |
 | `cow_batch` | **now** | CoW auction | Subsidized, user-opted surplus. First dollar. |
 | `uniswapx_fill` | **next** | Dutch order | Same graph, filler objective, inventory. |
-| `erc7683_fill` | **next** | Cross-chain intent | Exotic-route spreads still exist. |
+| `erc7683_fill` | **next** | Protocol-specific cross-chain intent | Only after route, settlement, bridge/finality and capital risk memo. |
 | `fusion_fill` | **watch** | 1inch Fusion | Permissioned resolvers. After UniswapX is green. |
 | `cow_crosschain` | **watch** | CoW non-EVM dest | After EVM CoW `PASS`. |
 

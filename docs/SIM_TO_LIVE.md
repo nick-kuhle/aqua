@@ -1,5 +1,7 @@
 # Simulation to live
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Order is the safety. Skip a step and the rest are theater.
 
 Applies **per chain, per lane** (Mouth A vs sidecar). Arming CoW on BNB

@@ -1,5 +1,7 @@
 # Qualification
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 A row may be a live candidate and still forbidden to send. Qualification
 is the evidence gate. It is per **row per chain per process**.
 

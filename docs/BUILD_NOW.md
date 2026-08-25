@@ -1,5 +1,7 @@
 # What is buildable now
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 August 2026. This is the honest cut of Aqua that a small team can ship
 without waiting on a protocol, a bond, or a research result.
 
@@ -18,7 +20,7 @@ demoed on generated data.
 | Slice | Why it is buildable today | Scaling hook you put in now, not later |
 | --- | --- | --- |
 | `AquaExecutor` + Foundry tests | Solidity 0.8.26, Cancun, Balancer V2 flash loans, EIP-1153 transient storage — all live on Ethereum and Base | `Call[]` encoding. Never a strategy-specific function |
-| Engine-core: types, config, rpc, risk, store | Standard Rust. No novel chain primitive | `Strategy` / `Mouth` enums closed in the compiler; adding a row is a compile error until funnel + risk + qualification are wired |
+| Engine-core: types, config, Alloy RPC boundary, risk, store | Alloy supplies maintained typed EVM primitives, bindings, providers and signing | `Strategy` / `Mouth` enums closed in the compiler; adding a row is a compile error until funnel + risk + qualification are wired |
 | Anvil fork simulator | Foundry `anvil` is the sim engine | Pin `state_block`. Never quote `latest`. Second backend (relay / sequencer compare) is a trait, even if only Anvil is implemented |
 | DEX graph: Uni V2 + Uni V3 via QuoterV2 | Factories and QuoterV2 are deployed and stable | `Edge` trait. V2 is an adapter, not the graph’s native type |
 | `optimizer::naive` | Independent per-order AMM route on the graph | Frozen as a CI baseline. Every later solver is scored against it |
@@ -43,8 +45,10 @@ If Phase 0 does not look like this, the repo is already too clever.
 | Oracle-update *execution* | Bundle placement behind the update | Ethereum, only after the bundle path is real |
 | Ops: systemd, Docker, `/api/metrics`, alerts | A host | Any chain process |
 
-CoW’s onboard path starts solvers on BNB. That is a constraint, not a
-preference. Use it. Cheap gas, subsidized rewards, limited blast radius.
+CoW environment, supported first chain, driver ownership, bond/KYC and reward
+terms are external prerequisites. Confirm them with CoW in writing immediately
+before onboarding; do not bake a BNB-first launch assumption into code or an
+operator promise. See [`CURRENT_STATE_2026.md`](CURRENT_STATE_2026.md).
 
 ---
 

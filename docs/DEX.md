@@ -1,5 +1,7 @@
 # DEX graph
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Strategies do not know which AMM they are trading. They consume `Edge`s.
 New venues are pricing modules, not new strategies.
 

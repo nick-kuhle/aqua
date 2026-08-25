@@ -1,5 +1,7 @@
 # Future scope
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Things Aqua is shaped to absorb without a rewrite, and things it will
 refuse. This is not a promise to build them. Each item needs a memo and
 a tape (or a TVL print) before a crate.

@@ -1,5 +1,7 @@
 # Contributing
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Read [`MAINTAINING.md`](MAINTAINING.md) first. Then
 [`ADDING.md`](ADDING.md). Then the doc for the surface you are touching.
 

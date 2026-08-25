@@ -1,5 +1,7 @@
 # Risk and safety
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 Moving a simulating process to live is
 [`SIM_TO_LIVE.md`](SIM_TO_LIVE.md): secure the API first, tighten these
 knobs second, arm last.
@@ -98,6 +100,17 @@ Tighten once there is data:
 - `MIN_FILL_BPS` and inventory gate are boot ceilings. Runtime narrows.
 
 ---
+
+## Registry, state and signer boundary
+
+A live candidate requires an unexpired, pinned protocol/asset/oracle registry
+entry whose code hash, proxy implementation and critical config match at the
+pinned state block. Critical reads (chain/head hash, executor code, nonce and
+post-trade facts) use independent providers where practical; disagreement is a
+lane halt. All EVM encoding, signing and receipt decoding uses Alloy according
+to [`ALLOY.md`](ALLOY.md). Worker processes have no production signing key;
+only the fenced execution leader may reserve a nonce, sign and submit. See
+[`PROTOCOL_REGISTRY.md`](PROTOCOL_REGISTRY.md) and [`SCALE.md`](SCALE.md).
 
 ## Raw mode
 

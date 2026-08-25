@@ -1,5 +1,7 @@
 # Landscape
 
+**Status: normative target specification — no implementation exists as of 24 August 2026.**
+
 This file ages fastest. Review quarterly. The implications for Aqua are
 the durable part.
 

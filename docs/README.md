@@ -12,6 +12,11 @@ Start here if you are new:
 
 | Doc | Use |
 | --- | --- |
+| [CURRENT_STATE_2026.md](CURRENT_STATE_2026.md) | Audited repository status, current-market corrections, launch gates |
+| [ALLOY.md](ALLOY.md) | Mandatory Alloy Rust EVM boundary |
+| [SCALE.md](SCALE.md) | Vertical/horizontal scaling, cell architecture, HA and SLOs |
+| [PROTOCOL_REGISTRY.md](PROTOCOL_REGISTRY.md) | Attested addresses/ABIs, integration lifecycle and asset/oracle policy |
+| --- | --- |
 | [SETUP.md](SETUP.md) | Install and run |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Wiring and layout |
 | [ENGINE.md](ENGINE.md) | Types, loops, funnel, API |
