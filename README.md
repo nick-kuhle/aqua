@@ -93,6 +93,7 @@ The intended toolchain versions and future developer workflow are documented in
 
 | Document | Contents |
 | --- | --- |
+| [`docs/AQUA_WORK_ORDER.md`](docs/AQUA_WORK_ORDER.md) | Complete development program, workstreams, gates, owners, and acceptance criteria |
 | [`docs/CURRENT_STATE_2026.md`](docs/CURRENT_STATE_2026.md) | Audited repository status, current-market corrections, launch gates |
 | [`docs/ALLOY.md`](docs/ALLOY.md) | Mandatory Rust EVM implementation boundary |
 | [`docs/SCALE.md`](docs/SCALE.md) | Chain-cell scaling, HA, backpressure and SLOs |
