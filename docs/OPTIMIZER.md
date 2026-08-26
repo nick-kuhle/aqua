@@ -49,20 +49,56 @@ score.
 
 ### Mouth A — CoW
 
+The objective changed shape with the CIP-67 fair combinatorial auction and the
+30 June 2026 consistency metric. Sources and the full mechanism summary are in
+[`RESEARCH_2026.md`](RESEARCH_2026.md) §1; the normative statement is here.
+
 ```
-maximize  Σ surplus_i  over filled orders
+maximize  Σ cost_adjusted_score_i  over filled orders
+where
+  cost_adjusted_score_i = surplus_i + protocol_fee_i
+                          − E[gas_i] − E[revert_loss_i]
 subject to
   each fill respects the user's limit price
-  CoW fairness / EBBO filters
-  token conservation
+  uniform directional clearing prices
+  token conservation, and NO surplus shifting between orders sharing a token
+  PER-PAIR FAIRNESS: for every directed token pair p in the solution,
+      score_p(solution) >= own_reference_score_p
   gas within the auction cap
   every AMM spill is executable on the pinned graph
-  wall clock ≤ OPT_BUDGET_MS
+  wall clock <= OPT_BUDGET_MS
 ```
+
+Three consequences that are merge-blocking:
+
+1. **Self-filter on the per-pair reference.** The protocol computes the best
+   single-pair bid per directed token pair and discards any batched bid that is
+   worse on *any* pair. The optimizer must compute its own
+   `own_reference_score_p` from baseline liquidity and refuse to submit a batch
+   it predicts will be filtered. Counter: `fairnessSelfRejected`. Submitting
+   predictable-filtered bids also depresses the bid-quality half of the
+   consistency metric, so it is worse than not bidding.
+2. **Price the revert.** Payment is
+   `cap(totalScore − referenceScore_i − missingScore_i)`, where
+   `missingScore_i` covers this solver's winning solutions that reverted
+   on-chain, and the result may be negative. `E[revert_loss_i]` is therefore
+   part of the reported score, not a post-hoc risk note. Reverting is charged
+   twice: once here, once through the settlement-success half of the
+   consistency metric.
+3. **Never inflate.** Truthful cost-adjusted bidding is the design target while
+   the reward cap is not binding. Pennying/overbidding and score inflation are
+   slashable social-rule violations. There must be no configuration key, no
+   multiplier, and no "aggressiveness" parameter capable of expressing them —
+   this is a code-level exclusion like the sandwich exclusion, not a policy.
 
 Surplus is denominated in native via the same valuation path the sidecar
 uses (pinned block, fail-closed, haircut). A solution whose surplus cannot
 be priced is not a solution.
+
+**Tape scoring for Mouth A changes accordingly.** A candidate optimizer version
+is compared to `naive` on: total cost-adjusted score, fairness survival rate,
+and simulated settlement success. A version that raises raw surplus while
+lowering fairness survival or settlement success **loses**, and does not merge.
 
 ### Mouth B — UniswapX
 

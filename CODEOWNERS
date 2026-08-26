@@ -1,0 +1,31 @@
+# Aqua code ownership.
+#
+# Review authority mirrors docs/AQUA_WORK_ORDER.md §8. No single reviewer may
+# approve a change that both widens authority and lands it.
+
+# Default
+*                               @nick-kuhle
+
+# Execution-critical Rust: risk gate, config gates, state identity, lanes.
+/bot/crates/engine-core/src/risk.rs        @nick-kuhle
+/bot/crates/engine-core/src/config.rs      @nick-kuhle
+/bot/crates/engine-core/src/transport.rs   @nick-kuhle
+/bot/crates/engine-core/src/capability.rs  @nick-kuhle
+
+# Contracts: executor bytecode moves only in an explicit contract PR.
+/contracts/                     @nick-kuhle
+
+# Registry, deployment and supply chain.
+/deploy/                        @nick-kuhle
+/bot/deny.toml                  @nick-kuhle
+/bot/Cargo.lock                 @nick-kuhle
+/.github/                       @nick-kuhle
+/scripts/                       @nick-kuhle
+
+# Doctrine documents: changing these changes what the engine is allowed to do.
+/AGENTS.md                      @nick-kuhle
+/docs/AQUA_WORK_ORDER.md        @nick-kuhle
+/docs/RISK.md                   @nick-kuhle
+/docs/TRANSPORT.md              @nick-kuhle
+/docs/PROTOCOL_REGISTRY.md      @nick-kuhle
+/docs/QUALIFICATION.md          @nick-kuhle

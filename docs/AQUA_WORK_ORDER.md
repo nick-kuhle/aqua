@@ -1,6 +1,6 @@
 # AQUA_WORK_ORDER — complete development work order
 
-**Status: authoritative delivery work order — 25 August 2026.**
+**Status: authoritative delivery work order — amended 25 August 2026.**
 
 Read [`RESEARCH_2026.md`](RESEARCH_2026.md) before changing the product boundary, optimizer objective, liquidation valuation, or transport model. This document
 turns Aqua’s specifications into a sequenced engineering program. It does not
@@ -46,8 +46,25 @@ exists. This work order begins from that exact state.
 | Accounting | Finalized realized balance deltas and gas, never an estimated P/L claim |
 
 Read [`ALLOY.md`](ALLOY.md), [`SCALE.md`](SCALE.md),
-[`PROTOCOL_REGISTRY.md`](PROTOCOL_REGISTRY.md), and [`RISK.md`](RISK.md)
-before changing an execution path.
+[`PROTOCOL_REGISTRY.md`](PROTOCOL_REGISTRY.md), [`TRANSPORT.md`](TRANSPORT.md),
+and [`RISK.md`](RISK.md) before changing an execution path.
+
+## 2a. Market amendments — 25 August 2026
+
+Five 2026 market facts change the specification of work already scheduled
+below. Each is sourced and expanded in [`RESEARCH_2026.md`](RESEARCH_2026.md);
+this table is the delivery-side statement of what must change.
+
+| # | Fact | Work-order effect |
+| --- | --- | --- |
+| A1 | Oracle-triggered liquidation value on major venues is auctioned by the protocol (Chainlink SVR + Atlas; Aave recaptured ~$16m across ~$675m of liquidations to early Feb 2026, ~73% average recapture). | W2 gains a required `svr_coverage` registry field, fail-closed on `unknown`. W8 splits the oracle row into `oracle_backrun_uncovered` and `oev_auction_svr`. W9 gains an OEV-auction transport adapter with its own qualification row and bid cap. |
+| A2 | Ethereum bundle delivery pays contribution-based refunds and may drop/merge transactions (BuilderNet/rbuilder, TEE, `refundPercent` / `refundRecipient` / `droppingTxHashes`). | New W4a/W9 requirement: transports are a closed enum with per-variant semantics; refunds are a receivable ledger, not revenue; drop-applied bundle variants must be simulated. `SUBMISSION_MODE` is retired. |
+| A3 | Aave v4 (Ethereum 30 Mar 2026, Avalanche 15 Jul 2026) replaced fixed close factors with target-health-factor repayment, a health-scaled variable bonus, dust clearance, and Risk-Steward-mutable Spoke parameters. | W2 gains `aave_v4_hub` / `aave_v4_spoke` capabilities. W8 gains a separate `liq_aave_v4` adapter, math and fixture set. Sharing v3 close-factor code is a review failure. |
+| A4 | CoW CIP-67 fair combinatorial auctions filter bids per directed token pair; the consistency metric since 30 Jun 2026 combines bid quality with settlement success. | W5/W6 gain a per-pair reference computation and a pre-submit fairness self-filter, plus cost-adjusted scoring. Tape scoring adds fairness survival and settlement success as first-class terms. |
+| A5 | In-process `revm` screening is roughly an order of magnitude cheaper than Anvil per candidate, and Foundry/Reth are both `revm` consumers. | W4 gains a two-tier `Simulator`: `revm` screens, Anvil remains the sole authority, with a differential-parity corpus as a merge gate. |
+
+None of these amendments relaxes a safety gate. A2, A3 and A5 each *add* a
+failure mode that must be tested before the affected lane may leave shadow.
 
 ## 3. Delivery rules
 
@@ -164,6 +181,19 @@ Implement the machine-readable registry described in
   assertions.
 - Code/proxy/implementation/admin/config attestation reader.
 - Token policy: address/code hash/decimals/allowance/behavior classification.
+- **Version-specific capabilities** (amendment A3): `aave_v3_pool`,
+  `aave_v4_hub`, `aave_v4_spoke`, `morpho_blue`, `morpho_v2_market` are
+  distinct. A protocol major version is never a field inside one capability.
+- **`svr_coverage` field** (amendment A1) on every `oracle_feed` and lending
+  market: `covered` | `uncovered` | `unknown`, with `recapture_venue` linking a
+  covered feed to a reviewed `oev_auction_venue` entry. `unknown` disables all
+  oracle-triggered rows for that market. Resolved for every feed a candidate
+  depends on, not only the trigger feed.
+- **`spoke_parameters_mutable_by`** on `aave_v4_spoke`, recording that a Risk
+  Steward may change parameters without a governance vote; capabilities with
+  this field forbid caching parameters across blocks.
+- **`refund_policy_id` and `mutation_policy`** on `bundle_transport`
+  (amendment A2).
 - Capability state machine: `disabled`, `shadow`, `limited_live`, `paused`,
   `expired`; immediate disable is allowed, widening requires release/approval.
 - Registry change generator/reviewer tooling and fixtures for proxy upgrade,
@@ -177,6 +207,11 @@ Implement the machine-readable registry described in
 - Unknown/changed code or proxy implementation blocks the dependent capability.
 - Every Alloy write binding has selector/custom-error tests and pinned-fork test
   stubs before its adapter uses it.
+- An `oracle_feed` entry with `svr_coverage: unknown`, or a `covered` entry with
+  no reviewed `recapture_venue`, causes an explicit rejection of every dependent
+  oracle-triggered candidate, verified by fixture.
+- A registry fixture proves an Aave v3 entry cannot satisfy an Aave v4
+  capability requirement, and vice versa.
 
 ## W3 — safety store, event journal, and execution-leader semantics
 
@@ -221,6 +256,16 @@ Create the Foundry project under `contracts/`.
 
 ### Simulation deliverables
 
+- A single `Simulator` trait with **two** implementations (amendment A5): an
+  in-process `revm` **screening** backend and the Anvil **authority** backend.
+  The authority backend cannot be configured to be the screening backend.
+- A committed differential-parity corpus: both backends must agree on revert
+  status, gas, and every balance delta. Disagreement fails CI, and a runtime
+  disagreement on a live-capable lane raises `sim_backend_disagreement`,
+  narrows the lane to simulation, and is never resolved by preferring the
+  faster answer.
+- `revm` and Anvil versions pinned and bumped together, with the parity corpus
+  re-run in the same change.
 - Anvil manager pinned to a block/hash and isolated process lifecycle.
 - Exact calldata/value/from/nonce/fee execution on the pinned fork.
 - Structured success/revert trace decoder and balance-delta accounting.
@@ -237,6 +282,9 @@ Create the Foundry project under `contracts/`.
   persists a complete simulation record.
 - No simulation result can be passed into a sender without matching exact
   payload hash, state identity, registry digest, and contract code hash.
+- No candidate can reach a send-capable interface on screening-backend evidence
+  alone; the persisted simulation evidence is always the authority result.
+- The differential-parity corpus passes offline in CI without a live RPC.
 
 ## W5 — DEX snapshots and deterministic naive baseline
 
@@ -275,8 +323,17 @@ contact. Archive the dated evidence outside the repository’s secrets.
 - Deadline-aware handler with bounded work, cancellation, and explicit
   no-solution behavior.
 - CoW solution codec; record canonical `Solution` plus encoded request bytes.
-- Fairness/EBBO validation as hard constraints based on current documented
-  protocol rules.
+- Fairness validation as hard constraints based on current documented protocol
+  rules, implemented for the **fair combinatorial auction** (amendment A4):
+  compute an own per-directed-token-pair reference score from baseline
+  liquidity, and **self-filter** any batch predicted to be filtered as unfair.
+  Counters `fairnessSelfRejected` and `fairnessRejected` stay distinct.
+- Cost-adjusted score reporting: surplus and protocol fee minus expected gas
+  and expected revert loss. No configuration key, multiplier, or
+  "aggressiveness" parameter may be capable of expressing score inflation,
+  pennying, or overbidding — this is a code-level exclusion.
+- Pre-submit assertions for uniform directional clearing prices, token
+  conservation, and no surplus shifting between orders sharing a token.
 - Shadow-only response route protected by authentication and request limits.
 - Notify/outcome state machine and protocol-vs-local accounting separation.
 - Frozen replay tape, naive comparison, acceptance/rejection/deadline metrics.
@@ -289,6 +346,12 @@ contact. Archive the dated evidence outside the repository’s secrets.
   snapshot, optimizer result, codec bytes, and decision reason.
 - No submission key is loaded. No production/staging endpoint is configured in
   a default build. No outcome can become a live qualification result.
+- A tape test proves the self-filter: a batch that is worse than the own
+  per-pair reference on any pair is not submitted, and is counted separately
+  from protocol-side rejections.
+- A tape test proves a version raising raw surplus while lowering fairness
+  survival or simulated settlement success is scored as a **loss** against
+  `naive` and cannot merge.
 
 ## W7 — API, observability, operator console, and operations
 
@@ -316,20 +379,40 @@ contact. Archive the dated evidence outside the repository’s secrets.
 - Dashboard distinguishes generated data, replay, shadow, simulation and
   finalized real outcomes at every surface.
 
-## W8 — Morpho Blue and Aave V3 simulation-only sidecars
+## W8 — Morpho Blue, Aave v3, and Aave v4 simulation-only sidecars
+
+Scope note (amendments A1, A3): this workstream now covers **three** lending
+adapters and **two** oracle rows, because Aave v4 liquidation mathematics
+differ from v3, and because oracle-triggered value on covered feeds is
+auctioned rather than raced.
 
 ### Deliverables
 
-- Registry entries/bindings for each supported deployment, market/reserve and
-  asset; no “all chains” assumption.
+- Registry entries/bindings for each supported deployment, market/reserve/Spoke
+  and asset; no “all chains” and no “all versions” assumption.
 - Bounded event/poll discovery, watchlist capacity/LRU, health calculations,
   oracle validity policy, liquidation builder, flash-loan builder, valuation,
   and exact fork simulation.
-- Morpho share math and callback path tests.
-- Aave account/reserve/EMode/close-factor/liquidation-bonus tests.
+- Morpho **Blue** share math and callback path tests. Morpho V2/Midnight is
+  explicitly **out of scope** and is a separate proposal with its own risk memo.
+- Aave **v3**: account/reserve/EMode/close-factor/liquidation-bonus tests.
+- Aave **v4**, as a separate adapter that shares no close-factor code with v3:
+  - target-health-factor repayment sizing at several health factors;
+  - health-scaled variable bonus at the low and high ends of the scale;
+  - dust-clearance boundary tested on both sides;
+  - Spoke parameters read at the pinned block for every candidate, never cached
+    across blocks, with a fixture for a Risk-Steward parameter change occurring
+    between discovery and execution;
+  - Hub/Spoke credit-line and per-Spoke accounting constraints.
+- Oracle rows split into `oracle_backrun_uncovered` and `oev_auction_svr`, with
+  an explicit coverage decision tree: `unknown` disables both, `covered` permits
+  only the auction row, `uncovered` permits only the backrun row.
+- For `oev_auction_svr`, an **observe-and-measure** phase: log auction rounds,
+  model the counterfactual winning bid, and compare against realized outcomes
+  for a full qualification window before any proposal to bid.
 - Collateral route/token policy/haircut handling and uncertainty rejection.
 - Separate funnel, caps, signer lane, evidence population, P/L ledger and
-  incident rules per protocol.
+  incident rules **per protocol and per version**.
 
 ### Acceptance criteria
 
@@ -338,6 +421,13 @@ contact. Archive the dated evidence outside the repository’s secrets.
   missing route/attestation causes an explicit rejection.
 - A competing liquidator, changed oracle, insufficient liquidity, callback
   revert, or adverse route is represented in test fixtures/failure accounting.
+- A test proves an Aave v4 candidate cannot be built through the v3 close-factor
+  path, and that a v4 candidate whose Spoke parameters changed since discovery
+  is rejected rather than executed on stale parameters.
+- A test proves `svr_coverage: unknown` rejects every oracle-triggered
+  candidate for that market with an operator-visible reason.
+- An OEV-auction candidate carries the modeled bid as an explicit cost line and
+  is rejected when the bid would exceed `MAX_OEV_BID_BPS`.
 
 ## W9 — controlled execution and qualification
 
@@ -351,7 +441,30 @@ requires a written go/no-go review by security, operator, protocol, and owner.
   target block/range, privacy/builder policy, simulation, replacement,
   cancellation, rate limit, error classification and reconciliation.
 - Bundle/private-raw/CoW-driver behavior implemented as separate adapters—not a
-  generic `send` function.
+  generic `send` function. The full closed `Transport` enum and its per-variant
+  obligations are specified in [`TRANSPORT.md`](TRANSPORT.md); `SUBMISSION_MODE`
+  is retired and must fail boot if present.
+- **Refund ledger** (amendment A2): `refund_expected_wei` recorded on the
+  candidate and excluded from realized P/L; `refund_reconciled_wei` credited
+  only after a finalized payout is observed and attributed to the specific
+  submission; a `refund_shortfall` alert on persistent divergence. Refund
+  eligibility is registry data — unknown eligibility models refunds as zero.
+- **Bundle mutation safety** (amendment A2): `droppingTxHashes` defaults empty;
+  a hash may be added only with a recorded, reviewed justification and a test
+  proving the candidate remains correct and profitable without it; the
+  drop-applied variants the builder may produce are simulated, and a
+  non-enumerable variant space forces an empty set.
+- **Anti-Sybil signer discipline**: splitting submissions across signer
+  identities to increase refunds is prohibited and must be structurally
+  impossible under the lane/signer model, not merely discouraged.
+- **Ordering-auction adapters**: OEV/SVR and express-lane transports with bid
+  caps (`MAX_OEV_BID_BPS`, `MAX_ORDERING_BID_BPS`) evaluated before transport
+  selection, `auctionLost` as a counted funnel outcome, and auction-win-with-
+  failed-execution treated as an incident.
+- **Multi-endpoint invariants**: one reserved nonce per `(chain, signer)` per
+  candidate regardless of fan-out; identical signed payload to every endpoint;
+  per-endpoint reconciliation resolving to one inclusion per
+  `(chain, signer, nonce)`; conflicting inclusion reports raise an incident.
 - Durable smoke-slot/drawdown kill state and independent lane kill switches.
 - Qualification evaluator that binds evidence to immutable release/config/
   registry/transport identity.
@@ -374,8 +487,10 @@ requires a written go/no-go review by security, operator, protocol, and owner.
 Immediately narrow to simulation and open an incident on: registry mismatch,
 provider disagreement on critical fact, store/nonce uncertainty, unaccounted
 inclusion, partial inclusion, signer-policy violation, drawdown breach,
-unbounded queue, reorg beyond supported depth, failed restore drill, or an
-unknown transport response for a value-bearing request.
+unbounded queue, reorg beyond supported depth, failed restore drill, an
+unknown transport response for a value-bearing request, a screening/authority
+simulation-backend disagreement, an inclusion of a bundle variant that was not
+simulated, or conflicting inclusion reports for one `(chain, signer, nonce)`.
 
 ## W10 — scale, HA, and additional chain cells
 
@@ -410,10 +525,21 @@ These are separate proposals, never automatic roadmap work:
   Permit2/callback, fill/cancel and markout model.
 - ERC-7683: protocol-specific origin/destination settler adapter with explicit
   bridge/finality/reimbursement/refund/capital risk state machine.
-- Oracle-update backrun: only after chain-specific private ordering/transport
-  contract tests; no speculative pending-feed execution.
+- Oracle-update backrun on **uncovered** feeds: only after chain-specific
+  private ordering/transport contract tests; no speculative pending-feed
+  execution.
+- OEV auction participation (SVR/Atlas) on **covered** feeds: only after the
+  written searcher interface, a dedicated transport adapter, a full
+  observe-and-measure window, and its own qualification row.
+- Morpho V2 / Midnight: separate protocol. Requires a risk memo covering
+  term/maturity default handling, multi-asset collateral valuation, curator
+  callback trust, and cross-chain settlement finality.
 - Arbitrum Timeboost, OP Stack Flashblocks, Base ordering features: only after
   a documented current API/ordering guarantee and dedicated transport adapter.
+  Flashblocks are an ingest hint, never an inclusion guarantee or a submission
+  target.
+- Reth ExEx ingestion for a self-hosted node cell: W10-class work; it does not
+  change the Anvil-authority simulation rule.
 - V3, Curve, Balancer, Aerodrome, Uniswap v4: each as a separately attested
   edge with exact math/calldata/fork parity.
 - Compound/Maker: separate discovery, settlement, and risk memo.
@@ -426,7 +552,8 @@ These are separate proposals, never automatic roadmap work:
 | Alloy boundary | mock/provider contract tests, pinned reads, timeout/429/reorg/disagreement |
 | Database | migration, crash, idempotency, nonce reservation, backup/restore |
 | Foundry | unit, fuzz, invariant, callback and fork tests |
-| Differential | protocol quote/selector/ABI/code-hash comparisons at edge cases |
+| Differential | protocol quote/selector/ABI/code-hash comparisons at edge cases; `revm` vs Anvil parity on revert/gas/balance deltas |
+| Transport | per-variant adapter contract tests, refund expected/observed/reconciled, drop-applied bundle variants, auction win/loss/ambiguous, multi-endpoint single-nonce |
 | Replay | deterministic offline tapes with versioned provenance |
 | Integration | local Anvil plus mocked protocol/transport endpoints |
 | Failure | WS gap, stale cache, changed proxy, lost response, full disk, signer denial, failover |
@@ -487,8 +614,15 @@ Aqua v1 is complete only when all of the following are true:
 “Code compiles,” “a bundle landed,” “the dashboard is visible,” and “an
 opportunity was simulated” are not v1 completion criteria.
 
-## 10. Immediate next three pull requests
+## 10. Immediate next pull requests
 
+The first three are unchanged in intent and remain the gate on everything else.
+PR 0 is new: `cargo fmt --check` currently **fails** on `main`, so the very
+first CI run would be red against the existing tree.
+
+0. **`style: format the existing foundation`**
+   - Run `cargo fmt` over `bot/`. No logic change. This must land before or
+     inside PR 1, or the new CI gate fails on arrival.
 1. **`ci: add reproducible Rust quality gates`**
    - CI workflow, cargo cache, locked dependency check, fmt/clippy/test, docs
      links, secret scan, dependency/license scan.
@@ -499,5 +633,16 @@ opportunity was simulated” are not v1 completion criteria.
    - canonical head continuity, rewind events, state context, metrics and
      timeout/provider-disagreement behavior.
 
+Then, before any adapter work, the amendments above need their type-level
+foundations, which are cheap now and expensive later:
+
+4. **`feat: add closed Transport enum and submission record types`**
+   - No network code. The enum, the per-variant semantics table as types, the
+     required submission/resolution record, the refund ledger fields, and
+     exhaustiveness tests. Makes a generic `send` unrepresentable.
+5. **`feat: add capability and coverage types for registry v2`**
+   - Version-specific capability identifiers, `svr_coverage` tri-state with
+     fail-closed default, and unit tests proving `unknown` rejects.
+
 Do not start a CoW adapter, executor contract, liquidation strategy, frontend,
-or submission transport before these three are reviewed and green.
+or submission transport before PRs 0–3 are reviewed and green.

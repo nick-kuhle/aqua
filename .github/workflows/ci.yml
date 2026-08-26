@@ -1,0 +1,92 @@
+name: CI
+
+# Reproducible quality gates. No job may contact a live RPC, submit an order,
+# or require a secret. See docs/AQUA_WORK_ORDER.md W0.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  rust:
+    name: rust (fmt, clippy, test, locked)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: bot
+    steps:
+      - uses: actions/checkout@v4
+
+      # rust-toolchain.toml pins the channel and components.
+      - name: Show toolchain
+        run: rustup show && cargo --version && rustc --version
+
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry/index
+            ~/.cargo/registry/cache
+            ~/.cargo/git/db
+            bot/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('bot/Cargo.lock', 'bot/rust-toolchain.toml') }}
+          restore-keys: ${{ runner.os }}-cargo-
+
+      - name: Lockfile is committed and up to date
+        run: cargo metadata --locked --format-version 1 > /dev/null
+
+      - name: Format
+        run: cargo fmt --all --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      - name: Test
+        run: cargo test --workspace --locked
+
+      - name: Build is offline-capable after fetch
+        run: cargo build --workspace --locked
+
+  supply-chain:
+    name: supply chain (audit, licenses, deny)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      # cargo-deny 0.16 cannot parse CVSS 4.0 rustsec advisories
+      # (RUSTSEC-2026-0066: unsupported CVSS version: 4.0). 0.20.2 can.
+      - uses: EmbarkStudios/cargo-deny-action@v2.1.1
+        with:
+          rust-version: "1.90.0"
+          manifest-path: "./bot/Cargo.toml"
+          command: check
+          arguments: "--all-features --config bot/deny.toml"
+          command-arguments: "advisories bans licenses sources"
+
+  secrets:
+    name: secret scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Reject committed .env and key material
+        run: ./scripts/check-secrets.sh
+
+  docs:
+    name: docs (links, status banners, retired names)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check relative links, banners and retired config names
+        run: python3 scripts/check_docs.py

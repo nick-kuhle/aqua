@@ -72,9 +72,11 @@ Smoke does not grant `PASS`.
 | Row | Backend | Can `PASS` in v1? |
 | --- | --- | --- |
 | `cow_batch` | solver-auction | yes, after approved-chain continuity |
-| `liq_morpho` | fork vs chain | yes |
-| `liq_aave` | fork vs chain | yes |
-| `oracle_backrun` | fork vs chain, L1 bundle | yes only if bundle path exists |
+| `liq_morpho_blue` | fork vs chain | yes |
+| `liq_aave_v3` | fork vs chain | yes |
+| `liq_aave_v4` | fork vs chain | yes, separately; never inherits v3 evidence |
+| `oracle_backrun_uncovered` | fork vs chain, L1 bundle | yes only if bundle path exists and the feed is attested uncovered |
+| `oev_auction_svr` | fork vs chain, auction outcome | no in v1; observe-and-measure only |
 | `uniswapx_fill` | fill markout | after Mouth B exists |
 | `atomic_arb` on Base | sequencer state compare | not until Flashblocks work is real |
 | JIT / sandwich / sniper | — | no row |

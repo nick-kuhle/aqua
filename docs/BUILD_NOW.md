@@ -69,7 +69,7 @@ the target module boundaries are documented so month-four work does not rewrite 
 | Aerodrome volatile/stable | Exact fee location and stable-curve math must be verified live | `Edge` impl behind `DEX_AERODROME_VOLATILE=false` |
 | Curve / Balancer as graph legs | Different conservation rules | Pricing modules in `dex-graph`, not new strategies |
 | Compound V3 / Maker sidecar | Extra ABIs, extra discovery | Strategy rows that construct only when the chain profile has addresses |
-| Arbitrum Timeboost | Express-lane auction, not a Flashbots bundle | Chain profile + `SubmissionMode` variant, unimplemented |
+| Arbitrum Timeboost | Express-lane auction, not a Flashbots bundle | Chain profile + `Transport::ExpressLane` variant with an auction bid as a cost line, unimplemented |
 | 1inch Fusion resolver | Permissioned resolver set | Mouth stub, no driver |
 | Inventory-as-edge | Needs a book and a cost model | `InventoryEdge` in the optimizer, unused until Mouth B |
 

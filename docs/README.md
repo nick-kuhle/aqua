@@ -20,6 +20,7 @@ Start here if you are new:
 | [ALLOY.md](ALLOY.md) | Mandatory Alloy Rust EVM boundary |
 | [SCALE.md](SCALE.md) | Vertical/horizontal scaling, cell architecture, HA and SLOs |
 | [PROTOCOL_REGISTRY.md](PROTOCOL_REGISTRY.md) | Attested addresses/ABIs, integration lifecycle and asset/oracle policy |
+| [TRANSPORT.md](TRANSPORT.md) | Closed transport enum, refunds, bundle mutation, ordering auctions |
 | --- | --- |
 | [SETUP.md](SETUP.md) | Install and run |
 | [ARCHITECTURE.md](ARCHITECTURE.md) | Wiring and layout |
