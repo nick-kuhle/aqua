@@ -1,6 +1,6 @@
 # Implemented foundation ledger
 
-**Status: implementation ledger — 25 August 2026.** This is the only document
+**Status: implementation ledger — 26 August 2026.** This is the only document
 that makes a positive implementation claim. All other documents remain target
 specifications unless an item is listed here with a path and verification.
 
@@ -8,7 +8,7 @@ specifications unless an item is listed here with a path and verification.
 
 | Component | Path | Implemented scope | Explicitly not implemented |
 | --- | --- | --- | --- |
-| Rust workspace | `bot/Cargo.toml` | Workspace, Rust 1.90 toolchain pin, package metadata | CI, lockfile, release pipeline |
+| Rust workspace | `bot/Cargo.toml` | Workspace, Rust 1.90 toolchain pin, package metadata | release pipeline |
 | EVM dependency baseline | workspace dependencies | `alloy-primitives` for canonical EVM types in pure domain code | providers, transports, ABI bindings, signers, transaction submission |
 | Core types | `bot/crates/engine-core/src/types.rs` | candidate, lane, block/hash and state identity types | persistence, nonce allocator, event ingestion |
 | Boot config | `bot/crates/engine-core/src/config.rs` | injected-map parser; forbidden unit aliases; simulation default; live acknowledgement/broadcast/registry gates | dotenv loading, registry signature validation, RPC checks, secrets integration |
@@ -16,20 +16,7 @@ specifications unless an item is listed here with a path and verification.
 | Transport identity | `bot/crates/engine-core/src/transport.rs` | closed `Transport` enum with per-variant atomicity/privacy/refund/payment semantics; boot-time `TransportPolicy` with bid caps, drop permission and endpoint bounds; `RefundLedger` separating expected/observed/reconciled | **any** network code, endpoint client, auth, signing, submission, or reconciliation implementation |
 | Capability identity | `bot/crates/engine-core/src/capability.rs` | version-specific `Capability` enum (Aave v3 ≠ v4, Morpho Blue ≠ V2); `SvrCoverage` tri-state defaulting to `Unknown`; `permitted_oracle_row` fail-closed resolver | registry loading, signature/attestation checks, addresses, ABIs, code-hash reads |
 | CLI | `bot/crates/node/src/main.rs` | `aqua doctor` parses config only and explicitly performs no network/signing | API, scheduler, database, Anvil, chain access, transport, live execution |
-
-## Safety status
-
-- **No EVM provider is constructed.**
-- **No RPC/WS request is made.**
-- **No signer, private-key parser, execution key, or transaction encoder exists.**
-- **No contract, frontend, deployment artifact, protocol adapter, simulator,
-  database, replay fixture, qualification evidence, or live path exists.**
-- `LIVE_EXECUTION=true` is accepted only as a config-validation state; it does
-  not and cannot broadcast because no executor/transport exists.
-- The `transport` and `capability` modules are **pure decision types**. They
-  describe what a transport or capability *means* and refuse unsafe
-  combinations. They contain no endpoint, no client, no address and no ABI, and
-  cannot cause a network request. Naming a transport is not having one.
+| Offline CI | `.github/workflows/ci.yml` | fmt, clippy `-D warnings`, tests `--locked`, cargo-deny 0.20.2, secret scan, docs check | live RPC, secrets, frontend deploy |
 
 ## Foundation 1: 2026 market-correction types (25 August 2026)
 
@@ -42,6 +29,33 @@ enforced by the compiler before any adapter exists:
   (reconciled, finalized) is exposed as realized value.
 - An Aave v3 registry entry cannot satisfy an Aave v4 requirement, and
   `SvrCoverage::Unknown` — the default — rejects every oracle-triggered row.
+
+## Foundation 2: shadow operator console (26 August 2026)
+
+| Component | Path | Implemented scope | Explicitly not implemented |
+| --- | --- | --- | --- |
+| Operator console | `frontend/` | TanStack Start v1.0 console: 11 pages, in-process shadow cell, frozen 7-day CoW tape, naive-vs-v1 kill gate, funnel, qualification, go-live wizard, kill switch | Next.js (still the spec target), same-origin bot proxy, live RPC, signing, Anvil, attested registry |
+| Shadow kernel (TS) | `frontend/src/lib/aqua/` | Fail-closed risk gate, config parser (wei-only), V2 AMM + pairwise/ring/spill optimizer, row eligibility, 409 arming body | Alloy provider, fork sim of exact signed bytes, durable journal, transport client |
+| Console tests | `frontend/src/lib/aqua/kernel.test.ts` | Config refuse aliases/live; ordered risk rejects; v1 ≥ naive on tape; UniswapX/7683 stubs; submitted always 0 | Networked integration tests |
+
+The Aave panel in this console is **v3-shaped accounting only**. Aave v4 is a
+separate row in the Rust capability enum and is not simulated here.
+
+## Safety status
+
+- **No EVM provider is constructed.**
+- **No RPC/WS request is made.**
+- **No signer, private-key parser, execution key, or transaction encoder exists.**
+- **No contract, deployment artifact, protocol adapter, Anvil simulator,
+  database, qualification evidence, or live path exists.**
+- A generated-data operator console exists under `frontend/`. Demo data is
+  labeled. `requestLive` returns 409. Shadow rows cannot smoke or PASS.
+- `LIVE_EXECUTION=true` is accepted only as a config-validation state; it does
+  not and cannot broadcast because no executor/transport exists.
+- The `transport` and `capability` modules are **pure decision types**. They
+  describe what a transport or capability *means* and refuse unsafe
+  combinations. They contain no endpoint, no client, no address and no ABI, and
+  cannot cause a network request. Naming a transport is not having one.
 
 ## Verified foundation checks
 
@@ -72,6 +86,17 @@ an operational bot.
 Note: on 25 August 2026 `cargo fmt --check` was **failing** on the previously
 committed tree. It was reformatted in the same change that introduced CI, so
 that the first CI run is meaningful rather than red on arrival.
+
+Console verification (26 August 2026):
+
+```bash
+cd frontend
+npm test          # 15 kernel tests
+npm run typecheck
+```
+
+The console is a measurement instrument on generated data. It is not evidence
+of a live cell.
 
 ## Next approved increment
 

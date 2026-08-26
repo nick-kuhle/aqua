@@ -2,16 +2,14 @@
 
 **Audit date:** 25 August 2026
 **Repository reviewed:** `nick-kuhle/aqua`, commit `f2587ef`
-**Verdict (updated 25 August 2026):** strong safety-oriented product
-specification with a deliberately tiny, non-networked Rust foundation; **not
-yet a software product**. The repository now has a Cargo workspace, typed
-primitive/risk/config code and a config-only CLI, but still has no Solidity,
-Foundry project, Next.js app, deployment manifests, fixtures, CI, provider,
-signer, simulator, protocol adapter, database, transport, or executable live
-path. Rust 1.90, Cargo 1.90, and Foundry 1.7.1 are installed and the current
-Rust foundation fmt/clippy/unit-test suite passes.
+**Verdict (updated 26 August 2026):** strong safety-oriented product
+specification with a deliberately tiny, non-networked Rust foundation, 2026
+transport/capability identity types, offline CI, and a **shadow-only operator
+console** (`frontend/`, generated data, 409 on arming); **not a live bot**. The
+repository still has no Solidity, Foundry project, deployment manifests,
+provider, signer, simulator, protocol adapter, transport *implementation*,
+database, or executable live path.
 [`FOUNDATION.md`](FOUNDATION.md) is the authoritative implementation ledger.
-All other claims remain target architecture unless that ledger says otherwise.
 
 This document is the source of truth for the gap between the aspirational
 architecture and what can safely be represented to an operator, contributor,

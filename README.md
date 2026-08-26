@@ -1,11 +1,12 @@
 # Aqua
 
-> **Foundation status — 25 August 2026:** Aqua is not a runnable bot. A small,
-> non-networked Rust safety kernel now exists: typed state/lane primitives,
-> fail-closed configuration parsing, deterministic risk-gate unit tests, and an
-> `aqua doctor` config-only CLI. There is still no provider, signer, contract,
-> frontend, deployment configuration, CI pipeline, replay fixture, simulator,
-> API, protocol adapter, transport, database, or production capability. See
+> **Foundation status — 26 August 2026:** Aqua is not a runnable bot. A small,
+> non-networked Rust safety kernel exists (typed primitives, fail-closed config,
+> risk-gate tests, transport/capability identity types, config-only `aqua
+> doctor`), offline CI, and a **shadow-only operator console** under
+> `frontend/` on generated data. There is still no provider, signer, contract,
+> deployment configuration, live replay fixture, simulator, API, protocol
+> adapter, transport *implementation*, database, or production capability. See
 > [`docs/FOUNDATION.md`](docs/FOUNDATION.md) for the authoritative ledger.
 > Everything else below is **target architecture**, not available software.
 

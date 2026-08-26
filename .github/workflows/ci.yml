@@ -90,3 +90,24 @@ jobs:
           python-version: '3.12'
       - name: Check relative links, banners and retired config names
         run: python3 scripts/check_docs.py
+
+  console:
+    name: console (kernel tests, typecheck)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install
+        run: npm ci
+      - name: Kernel tests
+        run: npm test
+      - name: Typecheck
+        run: npm run typecheck
+
