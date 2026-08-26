@@ -1,6 +1,6 @@
 # What is buildable now
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -42,7 +42,7 @@ If Phase 0 does not look like this, the repo is already too clever.
 
 | Slice | External dependency | First live venue |
 | --- | --- | --- |
-| CoW shadow → staging → BNB production | Company KYC, CoW DAO bonding pool, BNB gas | BNB Chain |
+| CoW shadow → staging → first counterparty-approved production chain | Company KYC, current CoW terms, approved-chain gas and transport | Counterparty-selected chain |
 | Morpho liquidations, Ethereum, live-smoke then soak | Archive RPC, Balancer vault, Flashbots or equivalent for L1 | Ethereum |
 | Aave V3 liquidations, Ethereum, sim then soak | Same | Ethereum |
 | Oracle-update *detection* | Public or private mempool of `transmit` / `poke` | Ethereum (observational) |
@@ -51,7 +51,7 @@ If Phase 0 does not look like this, the repo is already too clever.
 
 CoW environment, supported first chain, driver ownership, bond/KYC and reward
 terms are external prerequisites. Confirm them with CoW in writing immediately
-before onboarding; do not bake a BNB-first launch assumption into code or an
+before onboarding; do not bake a chain-first launch assumption into code or an
 operator promise. See [`CURRENT_STATE_2026.md`](CURRENT_STATE_2026.md).
 
 ---
@@ -141,10 +141,10 @@ No live keys in any of those targets.
 
 ## Capital required to *build* vs to *arm*
 
-| | Build (now) | Arm Mouth A (BNB) | Arm sidecar (ETH) | Arm Mouth B |
+| | Build (now) | Arm Mouth A (approved chain) | Arm sidecar (ETH) | Arm Mouth B |
 | --- | --- | --- | --- | --- |
 | People | math + 2 eng | + entity/KYC | + bundle access | + inventory |
-| Money | RPC, laptops | BNB gas, company | gas ETH, tiny smoke | stables + WETH cap |
+| Money | RPC, laptops | approved-chain gas, company | gas ETH, tiny smoke | stables + WETH cap |
 | Bond | none | CoW DAO pool | none | none |
 | Inventory | none | none | none (flash loan) | yes |
 

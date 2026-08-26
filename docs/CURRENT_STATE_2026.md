@@ -1,8 +1,8 @@
 # August 2026 product and documentation audit
 
-**Audit date:** 24 August 2026  
-**Repository reviewed:** `nick-kuhle/aqua`, commit `ed66d03`  
-**Verdict (updated 24 August 2026):** strong safety-oriented product
+**Audit date:** 25 August 2026
+**Repository reviewed:** `nick-kuhle/aqua`, commit `f2587ef`
+**Verdict (updated 25 August 2026):** strong safety-oriented product
 specification with a deliberately tiny, non-networked Rust foundation; **not
 yet a software product**. The repository now has a Cargo workspace, typed
 primitive/risk/config code and a config-only CLI, but still has no Solidity,
@@ -16,6 +16,17 @@ All other claims remain target architecture unless that ledger says otherwise.
 This document is the source of truth for the gap between the aspirational
 architecture and what can safely be represented to an operator, contributor,
 partner, or prospective CoW onboarding contact.
+
+## Research update — 25 August 2026
+
+[`RESEARCH_2026.md`](RESEARCH_2026.md) is now the dated market brief and the
+source for the intent/MEV/liquidation conclusions below. The key update is
+that solver competition is increasingly auction-, inventory-, and
+sequencer-specific; a generic “private bundle” abstraction is unsafe. The
+reported 25 August Morpho PT/YT liquidation event and the March Aave oracle
+configuration incident reinforce that short-horizon valuation and config
+provenance are first-class risk inputs. They are recorded as reported lessons,
+not adopted as unverified protocol facts.
 
 ## What remains strategically sound
 
@@ -56,14 +67,14 @@ logic. [`ALLOY.md`](ALLOY.md) is now normative.
 
 [^alloy]: <https://docs.rs/alloy-core/latest/alloy_core/>.
 
-### 2. Do not promise a BNB-first production launch
+### 2. Do not promise a chain-first production launch
 
-CoW documentation currently says DAO bonding-pool solvers start on Arbitrum
-before moving to other L2s; it does **not** support a hard-coded “BNB first”
-product promise.[^cow] Treat chain, shadow/staging access, bonding, KYC,
-reward accounting and driver ownership as operator-verified external
-prerequisites. Replace hard dates, reward values, service-fee statements and
-“next Tuesday” launch assertions with an onboarding evidence checklist.
+CoW documentation and counterparty terms are changeable and do **not** support
+an Aqua hard-coded first-chain product promise.[^cow] Treat chain,
+shadow/staging access, bonding, KYC, reward accounting and driver ownership as
+operator-verified external prerequisites. Replace hard dates, reward values,
+service-fee statements and “next Tuesday” launch assertions with an onboarding
+evidence checklist.
 
 ### 3. Model UniswapX per chain, not as one Dutch-order codec
 

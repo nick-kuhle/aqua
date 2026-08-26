@@ -1,12 +1,12 @@
 # Simulation to live
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
 Order is the safety. Skip a step and the rest are theater.
 
-Applies **per chain, per lane** (Mouth A vs sidecar). Arming CoW on BNB
+Applies **per chain, per lane** (Mouth A vs sidecar). Arming CoW on any chain
 does not arm Morpho on Ethereum.
 
 ---

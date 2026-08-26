@@ -1,6 +1,6 @@
 # Optimizer
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -28,6 +28,19 @@ If math is writing HTTP servers, the split is wrong. If eng is inventing
 surplus formulas, the split is wrong.
 
 ---
+
+## Current-market correction — 25 August 2026
+
+Solver quality is not quote count or nominal auction wins. The objective must
+be evaluated as **expected realized value**: user/protocol surplus minus gas,
+fees, builder/sequencer payment, financing, inventory opportunity cost,
+expected revert/inclusion loss, and adverse markout. Keep expected, submitted,
+included, finalized, and reconciled values as separate fields.
+
+The optimizer remains pure, but its input snapshot must include provenance:
+state identity, registry digest, valuation source/confidence, transport policy,
+deadline, and inventory reservation. A route that is mathematically optimal
+without those inputs is not eligible for a live candidate.
 
 ## Objectives by mouth
 
@@ -147,12 +160,12 @@ make tape                              # CI: 7-day frozen set vs naive
 
 Metrics written to the console via `GET /api/optimizer`:
 
-- `surplus_v1 / surplus_naive` (must be > 1, target > 1.1)
+- `surplus_v1 / surplus_naive` (must be > 1, target > 1.1 **and** positive realized markout after all costs)
 - fill rate
 - estimated revert rate (from fork, on a sample)
 - tape age (stale tape is itself a signal)
 
-Refresh the tape monthly. A solver that only beats 2025 flow will lose in
+Refresh the tape monthly. A solver that only beats stale historical flow may lose in
 2026.
 
 ---

@@ -1,6 +1,6 @@
 # Chains
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -16,7 +16,7 @@ couple.
 | --- | --- | --- | --- |
 | 1 | Ethereum | no | Sidecar; CoW later |
 | 56 | BNB | no (public mempool exists; CoW may be considered) | Candidate only; verify current CoW terms |
-| 8453 | Base | yes | CoW after BNB; Flashblocks later |
+| 8453 | Base | yes | CoW after approved-chain evidence; Flashblocks later |
 | 42161 | Arbitrum | yes | CoW after Base; Timeboost later |
 
 Any other id: empty profile. Fill `*_ADDRESS` env vars. Boot warns on
@@ -51,7 +51,7 @@ every missing capability the enabled strategies wanted.
 4. Console `CHAINS` entry, explorer base, native symbol.
 5. If sequencer: default front-run rows off; `SubmissionMode::Raw`;
    `BRIBE_BPS=0`.
-6. Simulate a week before the next chain. Roadmap order is BNB → ETH →
+6. Simulate a week before the next chain. Roadmap order is counterparty-approved intent chain → ETH →
    Base → Arb on purpose.
 
 Do not copy Ethereum Aave into a Base env. That is how you simulate

@@ -1,6 +1,6 @@
 # Path to live
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -24,7 +24,7 @@ Companion: [`SIM_TO_LIVE.md`](SIM_TO_LIVE.md) (order),
 
 ## Burst (smoke)
 
-- [ ] Lane identified: Mouth A (BNB) **or** sidecar (ETH). Not both
+- [ ] Lane identified: Mouth A (approved chain) **or** sidecar (ETH). Not both
       in the same burst until each has survived once.
 - [ ] `LIVE_SMOKE_MAX` ≤ 5 written
 - [ ] Raw wei cap written if raw

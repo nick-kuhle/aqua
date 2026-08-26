@@ -1,6 +1,6 @@
 # Architecture
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Technology decision:** the engine is written in Rust; Alloy is its Rust EVM
 library stack, not a competing language or separate service. Solidity/Foundry
@@ -158,7 +158,7 @@ win field-by-field, so a chain without a profile is fully env-driven.
 | --- | --- | --- | --- | --- |
 | BNB | 56 | Candidate only; verify current CoW terms | CoW driver only if current onboarding grants it | solver-auction |
 | Ethereum | 1 | Sidecar liquidations; CoW later | bundle + CoW driver | relay + solver-auction |
-| Base | 8453 | CoW after BNB; sidecar after ETH evidence; Flashblocks later | raw / CoW driver | sequencer |
+| Base | 8453 | CoW after approved-chain evidence; sidecar after ETH evidence; Flashblocks later | raw / CoW driver | sequencer |
 | Arbitrum | 42161 | CoW after Base | raw / CoW driver | sequencer |
 
 See [`CHAINS.md`](CHAINS.md). Sequencer chains have no public mempool and

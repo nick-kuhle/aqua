@@ -1,7 +1,7 @@
 # Protocol registry and integration lifecycle
 
 **Status: normative target specification — only the non-networked foundation
-in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or
+in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or
 execution path exists.** A protocol name or contract address in source code is
 not an integration. The registry makes each live dependency explicit, attestable and
 revocable.

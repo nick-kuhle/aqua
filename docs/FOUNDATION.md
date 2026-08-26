@@ -1,6 +1,6 @@
 # Implemented foundation ledger
 
-**Status: implementation ledger — 24 August 2026.** This is the only document
+**Status: implementation ledger — 25 August 2026.** This is the only document
 that makes a positive implementation claim. All other documents remain target
 specifications unless an item is listed here with a path and verification.
 
@@ -27,7 +27,7 @@ specifications unless an item is listed here with a path and verification.
 
 ## Verified foundation checks
 
-On 24 August 2026, this repository was verified with Rust `1.90.0`, Cargo
+On 25 August 2026, this repository was verified with Rust `1.90.0`, Cargo
 `1.90.0`, and Foundry `1.7.1` (`forge`, `cast`, and `anvil`). The following
 checks passed:
 
