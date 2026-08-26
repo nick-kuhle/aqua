@@ -3,10 +3,11 @@
 Start here if you are new:
 
 1. [`../README.md`](../README.md) — what Aqua is
-2. [`BUILD_NOW.md`](BUILD_NOW.md) — what to write first
-3. [`ARCHITECTURE.md`](ARCHITECTURE.md) — shape
-4. [`ROADMAP.md`](ROADMAP.md) — order
-5. [`MAINTAINING.md`](MAINTAINING.md) — how to change it
+2. [`RESEARCH_2026.md`](RESEARCH_2026.md) — current market and engineering conclusions
+3. [`BUILD_NOW.md`](BUILD_NOW.md) — what to write first
+4. [`ARCHITECTURE.md`](ARCHITECTURE.md) — shape
+5. [`ROADMAP.md`](ROADMAP.md) — order
+6. [`MAINTAINING.md`](MAINTAINING.md) — how to change it
 
 ## Index
 
@@ -14,6 +15,7 @@ Start here if you are new:
 | --- | --- |
 | [AQUA_WORK_ORDER.md](AQUA_WORK_ORDER.md) | Complete sequenced development program and acceptance criteria |
 | [FOUNDATION.md](FOUNDATION.md) | Exact implemented/not-implemented ledger; only source for implementation claims |
+| [RESEARCH_2026.md](RESEARCH_2026.md) | Dated research brief: intents, MEV, liquidations, and Aqua decisions |
 | [CURRENT_STATE_2026.md](CURRENT_STATE_2026.md) | Audited repository status, current-market corrections, launch gates |
 | [ALLOY.md](ALLOY.md) | Mandatory Alloy Rust EVM boundary |
 | [SCALE.md](SCALE.md) | Vertical/horizontal scaling, cell architecture, HA and SLOs |

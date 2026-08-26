@@ -1,6 +1,6 @@
 # Aqua
 
-> **Foundation status — 24 August 2026:** Aqua is not a runnable bot. A small,
+> **Foundation status — 25 August 2026:** Aqua is not a runnable bot. A small,
 > non-networked Rust safety kernel now exists: typed state/lane primitives,
 > fail-closed configuration parsing, deterministic risk-gate unit tests, and an
 > `aqua doctor` config-only CLI. There is still no provider, signer, contract,
@@ -34,15 +34,16 @@ state journal + reconciliation  searcher allowlist              demo mode
 
 1. [`docs/FOUNDATION.md`](docs/FOUNDATION.md) — exact implemented/not-
    implemented ledger; read this before making an implementation claim.
-2. [`docs/CURRENT_STATE_2026.md`](docs/CURRENT_STATE_2026.md) — audited
+2. [`docs/RESEARCH_2026.md`](docs/RESEARCH_2026.md) — current intent, MEV, and liquidation-engine research.
+3. [`docs/CURRENT_STATE_2026.md`](docs/CURRENT_STATE_2026.md) — audited
    project status, August 2026 market corrections, and launch gates.
-2. [`docs/BUILD_NOW.md`](docs/BUILD_NOW.md) — the deliberately narrow,
+4. [`docs/BUILD_NOW.md`](docs/BUILD_NOW.md) — the deliberately narrow,
    shadow-only vertical slice to build first.
-3. [`docs/ALLOY.md`](docs/ALLOY.md) — mandatory Rust/EVM implementation
+5. [`docs/ALLOY.md`](docs/ALLOY.md) — mandatory Rust/EVM implementation
    standard. All EVM-facing Rust must use Alloy.
-4. [`docs/PROTOCOL_REGISTRY.md`](docs/PROTOCOL_REGISTRY.md) — required
+6. [`docs/PROTOCOL_REGISTRY.md`](docs/PROTOCOL_REGISTRY.md) — required
    code-hash-attested integration lifecycle.
-5. [`docs/SCALE.md`](docs/SCALE.md) — vertical/horizontal chain-cell, leader,
+7. [`docs/SCALE.md`](docs/SCALE.md) — vertical/horizontal chain-cell, leader,
    data, HA, and SLO model.
 
 ## Planned safety model

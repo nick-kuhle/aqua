@@ -1,7 +1,7 @@
 # Scalability and reliability architecture
 
 **Status: normative target specification — only the non-networked foundation
-in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or
+in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or
 execution path exists.** This is the scale plan for Aqua after the shadow-only vertical
 slice is correct. Scaling means preserving the safety properties in
 [`RISK.md`](RISK.md), not increasing candidate count or chains first.

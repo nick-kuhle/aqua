@@ -1,6 +1,6 @@
 # Rust and Alloy implementation standard
 
-**Status: mandatory target standard for new Rust EVM code — 24 August 2026.**
+**Status: mandatory target standard for new Rust EVM code — 25 August 2026.**
 A small Rust foundation uses `alloy-primitives` today; its exact scope is
 listed in [`FOUNDATION.md`](FOUNDATION.md). This document is the implementation
 contract for the future EVM-facing workspace described in

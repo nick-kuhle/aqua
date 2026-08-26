@@ -1,6 +1,6 @@
 # Roadmap
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -65,7 +65,7 @@ objective.
 
 ## Phase 3 — first dollars (days 60–90)
 
-- [ ] CoW production **BNB**
+- [ ] CoW production on the first counterparty-approved chain
 - [ ] First Tuesday COW ≥ 0 (zero is a data point; negative is an incident)
 - [ ] Ethereum Morpho `LIVE_SMOKE_MAX` ≤ 5, then soak
 - [ ] Oracle-backrun live-candidate **only if** L1 bundle path is real

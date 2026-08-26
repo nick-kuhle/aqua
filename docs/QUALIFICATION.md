@@ -1,6 +1,6 @@
 # Qualification
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -71,7 +71,7 @@ Smoke does not grant `PASS`.
 
 | Row | Backend | Can `PASS` in v1? |
 | --- | --- | --- |
-| `cow_batch` | solver-auction | yes, after BNB continuity |
+| `cow_batch` | solver-auction | yes, after approved-chain continuity |
 | `liq_morpho` | fork vs chain | yes |
 | `liq_aave` | fork vs chain | yes |
 | `oracle_backrun` | fork vs chain, L1 bundle | yes only if bundle path exists |

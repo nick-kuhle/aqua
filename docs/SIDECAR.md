@@ -1,11 +1,11 @@
 # Liquidation sidecar
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
-The sidecar is how Aqua makes (or loses) money while Mouth A is still in
-shadow. It does not wait on KYC, auctions, or inventory.
+The sidecar is an independent liquidation product; it may be researched while Mouth A is in
+shadow, but it never inherits Mouth A qualification, capital, signer, nonce, or risk budget. It does not wait on KYC, auctions, or inventory.
 
 It is **not** a second engine. It shares `AquaExecutor`, the anvil fork,
 the DEX graph, valuation, risk *parameters*, storage, and the console. It
@@ -16,6 +16,21 @@ Isolation pattern: the same polarity as any lane whose failure mode must
 not contaminate solver submissions.
 
 ---
+
+## Current-market correction — 25 August 2026
+
+Liquidation eligibility is not sufficient evidence of safe valuation. Add an
+explicit `OracleProvenance` record to every candidate: source(s), decimals,
+round/timestamp or block, deviation/staleness checks, configuration snapshot,
+haircut, and executable exit route. Markets with PT/YT, rebasing, fee-on-transfer,
+ERC-777, thin pools, or short TWAPs default to disabled until dedicated fixtures
+and manipulation tests exist.
+
+The reported 25 August 2026 Morpho PT-reUSD event is a cautionary incident
+report, not a primary-source protocol fact. Its lesson—short TWAPs plus thin
+liquidity and leverage can cascade—must be enforced by controls, not by a
+headline-based parameter. Likewise, an oracle/config snapshot mismatch can
+create incorrect liquidations even when the oracle algorithm is healthy.
 
 ## v1 rows
 

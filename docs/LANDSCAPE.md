@@ -1,6 +1,8 @@
 # Landscape
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
+
+For the dated research synthesis and primary-source links, read [`RESEARCH_2026.md`](RESEARCH_2026.md). This file records implications, not unverifiable market-share claims.
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -11,10 +13,7 @@ the durable part.
 
 ## Private orderflow and intents
 
-Public mempool share of DeFi flow is a minority and falling. Protect
-RPCs, MEV-Blocker, CoW, UniswapX, Fusion take the rest. Independent
-searchers decoding one more public router compete for residue that is
-already priced by builder-integrated desks.
+Flow is venue- and chain-specific; do not assume a universal private-orderflow share. Intent auctions, private relays, public mempools, and sequencer-specific paths have different observability and settlement semantics.
 
 **Implication:** Aqua’s primary ingest is auctions and signed orders,
 not `newPendingTransactions`. Mempool remains for oracle selectors and
@@ -35,7 +34,7 @@ still the highest-EV EVM use of this chassis.
 - June 30 2026: consistency metric = bid quality × settlement success.
 - CoW onboarding/bonding terms are external and changeable. Verify the current
   DAO-pool, supported-chain, KYC, driver, bond and reward terms directly with
-  CoW; this specification makes no BNB-first onboarding claim.
+  CoW; this specification makes no chain-first onboarding claim.
 - Full independent bond remains large. Do not plan to self-bond in 2026
   unless withholdals actually accumulate.
 

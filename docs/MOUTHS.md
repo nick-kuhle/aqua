@@ -1,6 +1,6 @@
 # Mouths
 
-**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 24 August 2026; no protocol or execution path exists.**
+**Status: normative target specification — only the non-networked foundation in [`FOUNDATION.md`](FOUNDATION.md) exists as of 25 August 2026; no protocol or execution path exists.**
 
 **Reading rule:** Except for explicitly dated external-market observations, “is”, “does”, “uses”, and similar present-tense language below specifies required future behavior; it is not evidence that a component exists today.
 
@@ -27,8 +27,8 @@ COW, plus whatever execution P&L the solver’s own inventory produces.
 - Protocol **pays** solvers. A new team can earn before it has a book.
 - Onboarding is documented: local → shadow → KYC → staging → production.
 - The DAO bonding pool avoids posting a full independent bond on day one.
-- First live chain is **BNB**, then other L2s, Ethereum last. Cheap gas,
-  limited blast radius, subsidized rewards.
+- First live chain is **not hard-coded**. Select it from current written counterparty terms,
+  transport capability, liquidity, and qualification evidence.
 
 ### What Aqua implements
 

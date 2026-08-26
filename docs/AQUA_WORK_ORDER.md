@@ -1,6 +1,8 @@
 # AQUA_WORK_ORDER — complete development work order
 
-**Status: authoritative delivery work order — 24 August 2026.** This document
+**Status: authoritative delivery work order — 25 August 2026.**
+
+Read [`RESEARCH_2026.md`](RESEARCH_2026.md) before changing the product boundary, optimizer objective, liquidation valuation, or transport model. This document
 turns Aqua’s specifications into a sequenced engineering program. It does not
 authorize live trading. A task is complete only when its acceptance evidence is
 committed, reviewed, and linked from the release record.
