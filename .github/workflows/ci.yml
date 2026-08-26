@@ -60,11 +60,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install cargo-deny
-        run: cargo install cargo-deny --locked --version ^0.16 || cargo install cargo-deny --locked
-      - name: cargo-deny
-        working-directory: bot
-        run: cargo deny --all-features check advisories bans licenses sources
+      # cargo-deny 0.16 cannot parse CVSS 4.0 rustsec advisories
+      # (RUSTSEC-2026-0066: unsupported CVSS version: 4.0). 0.20.2 can.
+      - uses: EmbarkStudios/cargo-deny-action@v2.1.1
+        with:
+          rust-version: "1.90.0"
+          manifest-path: "./bot/Cargo.toml"
+          command: check
+          arguments: "--all-features --config bot/deny.toml"
+          command-arguments: "advisories bans licenses sources"
 
   secrets:
     name: secret scan

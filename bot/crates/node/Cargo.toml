@@ -7,4 +7,4 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
-aqua-engine-core = { path = "../engine-core" }
+aqua-engine-core = { path = "../engine-core", version = "0.1.0" }

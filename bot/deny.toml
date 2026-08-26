@@ -1,14 +1,17 @@
-# cargo-deny policy. Reviewed dependency surface for a value-bearing binary.
+# cargo-deny 0.20 policy. Reviewed dependency surface for a value-bearing binary.
 # See docs/AQUA_WORK_ORDER.md W0.
+# cargo-deny 0.16 cannot parse CVSS 4.0 rustsec advisories (RUSTSEC-2026-0066).
 
 [advisories]
-version = 2
 yanked = "deny"
+# Transitive unmaintained crates (today: `paste` via alloy-primitives) are
+# Alloy's surface, not ours. Workspace crates going unmaintained still fail.
+unmaintained = "workspace"
+unsound = "workspace"
 # No blanket ignores. An ignored advisory needs a dated comment and a reviewer.
 ignore = []
 
 [licenses]
-version = 2
 # Permissive only. A copyleft or unknown license is a review decision, not a
 # silent dependency addition.
 allow = [
@@ -33,15 +36,15 @@ wildcards = "deny"
 # Hard technology boundary from docs/ALLOY.md: Alloy is the EVM stack.
 # ethers-rs is deprecated and must never enter this workspace.
 deny = [
-  { name = "ethers" },
-  { name = "ethers-core" },
-  { name = "ethers-providers" },
-  { name = "ethers-signers" },
-  { name = "ethers-contract" },
-  { name = "ethers-middleware" },
-  { name = "web3" },
+  { crate = "ethers", reason = "docs/ALLOY.md: ethers-rs is deprecated" },
+  { crate = "ethers-core" },
+  { crate = "ethers-providers" },
+  { crate = "ethers-signers" },
+  { crate = "ethers-contract" },
+  { crate = "ethers-middleware" },
+  { crate = "web3" },
   # Hand-rolled crypto/RLP/signing surfaces are Alloy's job, not ours.
-  { name = "openssl" },
+  { crate = "openssl" },
 ]
 
 [sources]
