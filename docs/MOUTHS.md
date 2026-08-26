@@ -16,10 +16,48 @@ are in scope.
 
 **Status:** v1, first production.
 
-CoW batches user-signed intents and runs a solver competition. The winner
-is the solution with the greatest surplus that passes fairness. Solvers
+CoW batches user-signed intents and runs a solver competition. Solvers
 are bonded (or sit in the CoW DAO bonding pool). Compensation is weekly
 COW, plus whatever execution P&L the solver’s own inventory produces.
+
+### The 2026 auction is combinatorial and fairness-filtered — build to that
+
+As of the CIP-67 fair combinatorial auction (see
+[`RESEARCH_2026.md`](RESEARCH_2026.md) §1 for sources, read 25 August 2026),
+"greatest surplus wins" is wrong in three ways that change the engineering:
+
+1. **Per-directed-token-pair reference.** The protocol computes the best bid on
+   each directed token pair, then **filters out any batched bid that scores
+   worse than that reference on any pair**, then maximizes total score over the
+   survivors. A large batch that is weak on one leg is discarded whole.
+2. **Reverts are charged.** Payment is
+   `cap(totalScore − referenceScore_i − missingScore_i)`, where
+   `missingScore_i` is the score of this solver's *winning* solutions that
+   reverted on-chain. The result can be negative — the solver pays.
+3. **Consistency rewards changed on 30 June 2026** to a metric combining **bid
+   quality** (share of proposed surplus on each executed order, counting only
+   fairness-surviving solutions) and **settlement success rate**. CIP-72 also
+   requires a quote-reward-earning solver to bid a matching amount in the
+   competition.
+
+Normative consequences for Aqua:
+
+- The optimizer must compute its **own per-pair reference** from baseline
+  liquidity and **self-filter before submitting**. Submitting a bid that Aqua
+  can predict will be filtered wastes the auction and depresses bid quality.
+  Funnel counter: `fairnessSelfRejected`.
+- Reported score is **cost-adjusted**: surplus net of expected gas and expected
+  revert loss. Truthful cost-adjusted bidding is the design target. Deliberate
+  score inflation (pennying/overbidding) is a slashable social-rule violation
+  and must be impossible to configure, not merely discouraged.
+- Settlement success is a first-class product metric, not an ops statistic. It
+  enters both the payment formula and the consistency budget. A change that
+  raises surplus but lowers settlement success may be a net loss and must be
+  evaluated as such on tape.
+- Uniform directional clearing prices, no surplus shifting between orders
+  sharing a token, no score inflation, and legitimate-only buffer usage are
+  competition rules with slashing exposure. Encode them as **pre-submit
+  assertions** in the encoder, not as review guidance.
 
 ### Why A first
 
@@ -69,8 +107,13 @@ sidecar P/L. Re-verify current rules before every environment transition.
 
 ### Mouth A funnel extras
 
-`auctionsSeen`, `solutionsAccepted`, `wins`, `reverts`, `deadlineMissed`,
-`fairnessRejected`.
+`auctionsSeen`, `solutionsProposed`, `fairnessSelfRejected`,
+`solutionsAccepted`, `wins`, `reverts`, `deadlineMissed`, `fairnessRejected`,
+`perPairReferenceBeaten`, `settlementSuccessRate`, `scoreReportedVsRealized`.
+
+`fairnessSelfRejected` (Aqua declined to submit) and `fairnessRejected` (the
+protocol filtered the bid) are different failures with different fixes and must
+never be summed into one counter.
 
 Qualification backend: `solver-auction` — fork vs the protocol’s
 acceptance/notify, not vs `eth_callBundle`.
@@ -125,6 +168,16 @@ are the entry.
 Cross-chain intents. Solvers front destination funds and collect origin
 plus a fee. Spreads: 1–5 bps on deep stable corridors (owned), 20–50 bps
 on exotic routes (the only place a new book belongs).
+
+**2026 correction (read 25 August 2026).** ERC-7683 was ratified in early 2025
+and is in production at Across, UniswapX, Eco and, since February 2026, a CoW
+adapter, with the Ethereum Foundation's Open Intents Framework as shared
+reference tooling backed by 30+ teams. That standardization cuts both ways: a
+single inventory pool can quote several venues, but **so can every competitor**,
+so spreads converge across implementers. Treat the "one filler speaks several
+layers" thesis as a cost-of-entry reduction, not as an edge. The edge, if any,
+remains route-specific inventory and credit/finality risk pricing that others
+decline to take — which is a capital business, not a codec business.
 
 Same `Solution` type. Different schema and inventory topology
 (origin/dest). Do not fork the optimizer; pass `Objective::CrossChain`.

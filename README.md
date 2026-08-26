@@ -45,6 +45,30 @@ state journal + reconciliation  searcher allowlist              demo mode
    code-hash-attested integration lifecycle.
 7. [`docs/SCALE.md`](docs/SCALE.md) — vertical/horizontal chain-cell, leader,
    data, HA, and SLO model.
+8. [`docs/TRANSPORT.md`](docs/TRANSPORT.md) — the closed transport enum,
+   refund ledger, bundle-mutation safety, and ordering-auction rules.
+
+### What the August 2026 market forced into the design
+
+The plan was re-grounded against current sources on 25 August 2026
+([`docs/RESEARCH_2026.md`](docs/RESEARCH_2026.md) carries the citations):
+
+- **Oracle liquidation value is largely auctioned now, not raced.** Chainlink
+  SVR with Atlas recaptures the majority of oracle-triggered liquidation MEV
+  for the lending protocol. Aqua treats covered feeds as a bid-into-an-auction
+  strategy with a hard bid cap, and disables the row when coverage is unknown.
+- **Bundle delivery pays refunds and may mutate bundles.** BuilderNet-style TEE
+  block building refunds by marginal contribution and can drop/merge
+  transactions. Refunds are booked as receivable, never revenue, and any
+  droppable transaction needs a test proving the candidate survives without it.
+- **Aave v4 changed liquidation math.** Target health factor replaces the close
+  factor, the bonus scales with health, and dust rules force full clears. v3
+  and v4 are separate rows with separate fixtures.
+- **CoW scores per directed token pair and charges for reverts.** The optimizer
+  self-filters unfair batches and reports cost-adjusted scores; settlement
+  success is a product metric, not an ops statistic.
+- **Simulation is two-tier.** In-process `revm` screens candidates cheaply;
+  Anvil remains the only authority, guarded by a differential-parity corpus.
 
 ## Planned safety model
 

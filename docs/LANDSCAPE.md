@@ -31,6 +31,11 @@ still the highest-EV EVM use of this chassis.
 
 - Quarterly volume is billions, not tens of billions every month.
 - Protocol shares fees with solvers; `β` and consistency rules move.
+- Since CIP-67 the auction is a **fair combinatorial auction**: bids are
+  filtered per directed token pair against a single-pair reference, then the
+  best fair combination wins. A strong batch with one weak leg is discarded.
+- Payment is `cap(totalScore − referenceScore − missingScore)` and can be
+  negative; reverted winning solutions are charged.
 - June 30 2026: consistency metric = bid quality × settlement success.
 - CoW onboarding/bonding terms are external and changeable. Verify the current
   DAO-pool, supported-chain, KYC, driver, bond and reward terms directly with
@@ -56,12 +61,23 @@ on long-tail and exotic routes with a hard inventory cap.
 
 ## Liquidations
 
-Aave still largest. Morpho has scaled into the same order of magnitude
-with permissionless markets. Liquidations are FCFS. Oracle-update
-same-block is the edge; block-late is the commodity.
+Aave still largest, now split across v3 (bulk of TVL, migrating) and v4
+(Ethereum from 30 Mar 2026, Avalanche from 15 Jul 2026; hub-and-spoke,
+target-health-factor repayment, health-scaled bonus, dust clearance). Morpho
+has scaled into the same order of magnitude with permissionless Blue markets,
+and separately launched intent-based fixed-term credit (V2/Midnight).
 
-**Implication:** Morpho tail + oracle backrun is the sidecar. Aave is
-table stakes. Compound/Maker are ports, not identity.
+Liquidations are FCFS **only where the oracle value is not already auctioned**.
+On Chainlink SVR-covered feeds — Aave core Ethereum markets among them — the
+right to backrun the update is auctioned via Atlas and recaptured by the
+protocol, at a reported average recapture rate near 73%. Same-block oracle
+access there is bought, not won.
+
+**Implication:** the sidecar is Morpho Blue tail + Aave v3 + a separate Aave v4
+adapter, with the oracle row split into an uncovered-feed backrun and an
+SVR-auction participant that observes and measures before it ever bids. Aave is
+table stakes. Compound/Maker are ports, not identity. Morpho V2 is a different
+protocol, not a version bump.
 
 ---
 
@@ -74,9 +90,15 @@ spam-shaped, cheap gas.
 Flashblocks (Base, ~200 ms) are a preconfirmed **state**, not a public
 mempool. Arbitrum Timeboost is an express-lane **auction**.
 
-**Implication:** do not map L2 onto Flashbots bundles. `SubmissionMode::Raw`,
-`TxSource::Flashblock` with `state_id`, searcher-tx-only. Timeboost is a
-later chain-specific submitter, not a flag on raw mode.
+**Implication:** do not map L2 onto Flashbots bundles. `Transport::SequencerRaw`,
+`TxSource::Flashblock` with `state_id`, searcher-tx-only. Timeboost is
+`Transport::ExpressLane` — a later chain-specific submitter with an auction bid
+as a cost line, not a flag on raw mode. A Flashblock is a 200 ms preconfirmation
+hint and is never inclusion evidence.
+
+On L1, the relevant 2026 change is that bundle delivery pays contribution-based
+refunds (BuilderNet/rbuilder in TEEs) and may drop/merge transactions. That is
+transport semantics, not a tuning knob. See [`TRANSPORT.md`](TRANSPORT.md).
 
 Sandwiching on private-mempool L2s is empirically unprofitable. Aqua
 does not try.

@@ -20,10 +20,34 @@ asset allowlist + decimals, feature flags, owner/admin/upgrade watcher
 source provenance, reviewed_at, revalidate_by, approved_by, status
 ```
 
-Capabilities are narrow: `aave_v3_pool`, `morpho_blue`, `balancer_flash_loan`,
-`uniswap_v3_router`, `cow_settlement`, `uniswapx_reactor`, `oracle_feed`,
-`bundle_transport`, etc. One address can expose multiple capabilities only
+Capabilities are narrow and **version-specific**: `aave_v3_pool`,
+`aave_v4_hub`, `aave_v4_spoke`, `morpho_blue`, `morpho_v2_market`,
+`balancer_flash_loan`, `uniswap_v3_router`, `cow_settlement`,
+`uniswapx_reactor`, `oracle_feed`, `bundle_transport`, `oev_auction_venue`,
+`express_lane_venue`, etc. One address can expose multiple capabilities only
 through separate reviewed entries.
+
+A protocol major version is **never** a field inside one capability. Aave v3
+and Aave v4 have different liquidation mathematics (fixed close factor vs
+target health factor and a health-scaled bonus), so they are different
+capabilities with different bindings and different fixtures. The same rule
+applies to Morpho Blue vs Morpho V2/Midnight.
+
+### Additional required fields (added 25 August 2026)
+
+Some capabilities carry fields without which the dependent strategy is unsafe:
+
+| Field | Applies to | Meaning and fail-closed rule |
+| --- | --- | --- |
+| `svr_coverage` | `oracle_feed`, lending markets | `covered` \| `uncovered` \| `unknown`. Records whether the feed/market's oracle-triggered value is auctioned by a protocol recapture mechanism (e.g. Chainlink SVR + Atlas). `unknown` **disables** every oracle-triggered row for that market. Coverage changes per asset over time and carries its own `revalidate_by`. |
+| `recapture_venue` | covered feeds | Which auction venue governs the covered feed, linking to an `oev_auction_venue` entry. A covered feed with no reviewed venue entry is treated as `unknown`. |
+| `spoke_parameters_mutable_by` | `aave_v4_spoke` | Records that a Risk Steward contract may change parameters within governance bounds **without a vote**. Any capability with this field set forbids caching its parameters across blocks. |
+| `refund_policy_id` | `bundle_transport` | Which refund rule version and eligibility class applies. Unknown eligibility means refunds are modeled as zero. |
+| `mutation_policy` | `bundle_transport` | Whether the endpoint may drop/merge transactions (`droppingTxHashes`), which changes atomicity assumptions. See [`TRANSPORT.md`](TRANSPORT.md). |
+
+Because a single liquidation can be triggered by one feed while seizing
+collateral priced by another, `svr_coverage` must be resolved for **every** feed
+the candidate depends on, not just the trigger.
 
 At boot and periodically, the cell reads code, proxy implementation/admin and
 critical immutable/config values at a pinned block using independent RPCs. A

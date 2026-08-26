@@ -135,7 +135,9 @@ specified in [`ALLOY.md`](ALLOY.md). Deleting a mouth crate removes that mouth.
    selectors.
 2. Build `Opportunity` (flash loan + `Call[]`).
 3. Same risk → sim → qualify → submit path, **other nonce lane**,
-   `SubmissionMode::Bundle` on Ethereum, `Raw` on sequencer chains.
+   `Transport::Bundle` on Ethereum, `Transport::SequencerRaw` on sequencer
+   chains. Transport is a closed enum, never a boolean or a mode string; see
+   [`TRANSPORT.md`](TRANSPORT.md).
 4. Oracle-update backruns on L1 are the one place a foreign transaction
    (the price update) is in the payload. That field is `victim_hashes`.
    It is never used to smuggle a CoW batch or a Flashblocks backrun.
@@ -175,7 +177,7 @@ fail-loud is the correct polarity.
 
 The registry holds tokens, factories, quoters, routers, the Balancer
 vault, lending pools, and chain behaviour (block time, default
-`SubmissionMode`, default `QualificationBackend`, `sequencer_only`).
+permitted `Transport` set, default `QualificationBackend`, `sequencer_only`).
 
 ---
 

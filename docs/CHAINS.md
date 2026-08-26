@@ -49,7 +49,7 @@ every missing capability the enabled strategies wanted.
    a known id).
 3. `.env.example.<name>`
 4. Console `CHAINS` entry, explorer base, native symbol.
-5. If sequencer: default front-run rows off; `SubmissionMode::Raw`;
+5. If sequencer: default front-run rows off; `Transport::SequencerRaw` only;
    `BRIBE_BPS=0`.
 6. Simulate a week before the next chain. Roadmap order is counterparty-approved intent chain → ETH →
    Base → Arb on purpose.

@@ -127,6 +127,47 @@ the candidate's block, plus transport-specific simulation where available.
 `eth_estimateGas` must never be allowed to mutate the payload that was
 simulated.
 
+## Two-tier simulation: `revm` screens, Anvil decides
+
+Correctness is non-negotiable; simulation *cost* decides how many candidates
+can be evaluated per block. Published Rust benchmarks on the same workload
+(read 25 August 2026, see [`RESEARCH_2026.md`](RESEARCH_2026.md) §4) put 100
+sequential `eth_call`s at ~89 ms against a local node and ~4.4 s against a
+third-party provider; Anvil at ~120 ms / ~868 ms; in-process `revm` at ~80 ms /
+~1010 ms; and `revm` with a warm state cache plus a purpose-built quoter
+contract at ~19 ms / ~405 ms. Re-benchmark on Aqua's own hardware before
+quoting any of these numbers.
+
+Aqua therefore defines **one `Simulator` trait with two implementations**:
+
+| Role | Backend | Authority | Used for |
+| --- | --- | --- | --- |
+| Screen | in-process `revm` | **none** | Ranking, pruning, search-loop inner evaluation |
+| Authority | Anvil fork, pinned block | **yes** | The exact signed payload, persisted simulation evidence |
+
+Binding rules:
+
+1. `SIM_AUTHORITY_BACKEND` cannot be set to the screening backend. A config
+   that tries fails boot.
+2. A candidate may **never** reach a send-capable interface on screening
+   evidence alone. What is persisted as simulation evidence, and what the risk
+   gate reads via `exact_payload_simulated`, is the authority result.
+3. A **differential test is a merge gate**: over the committed fixture corpus,
+   the two backends must agree on revert status, gas, and every balance delta.
+   Disagreement fails CI.
+4. At runtime, disagreement between screen and authority on a live-capable lane
+   is an incident (`sim_backend_disagreement`), narrows the lane to simulation,
+   and is never resolved by preferring the faster answer.
+5. The screening backend must be deterministic and replayable from the same
+   pinned state identity. No wall clock, no network inside the search loop.
+6. `revm` and Anvil versions are pinned together and bumped together, with the
+   differential corpus re-run in the same change. Foundry/Anvil is itself a
+   `revm` consumer, so a mismatched pair can silently diverge.
+
+Reth **ExEx** (post-execution hooks with reorg awareness, avoiding polling
+entirely) is recorded as the long-term ingest option for a self-hosted node
+cell. It is a W10 concern, not v1, and does not change the authority rule.
+
 ## ABI inventory and ownership
 
 Before writing a protocol adapter, commit a machine-readable ABI/address

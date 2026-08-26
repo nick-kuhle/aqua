@@ -131,12 +131,15 @@ Mouth A adds auction-specific counters: `auctionsSeen`, `solutionsAccepted`,
 
 ## Submission transport
 
-`SubmissionMode` is a routing label, not a universal API. Each concrete
+`Transport` is a closed enum, not a routing label and not a universal API.
+The full per-variant contract is [`TRANSPORT.md`](TRANSPORT.md). Each concrete
 transport records endpoint identity, auth identity, request bytes, target
 block/range, privacy/builder policy, replacement/cancellation key, simulation
 result, response and reconciliation state. At minimum distinguish CoW driver,
 private raw transaction, `eth_sendBundle`, `mev_sendBundle`, and chain-specific
-sequencer/express-lane APIs. A transport may only retry a request after its
+sequencer/express-lane APIs, and protocol-run OEV auction venues. Each
+records its refund terms and whether the endpoint may drop or merge
+transactions. A transport may only retry a request after its
 idempotency/cancellation semantics are known. Flashbots documents distinct
 advanced relay methods and bundle cancellation/replacement behavior.[^fb]
 

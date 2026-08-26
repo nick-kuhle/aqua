@@ -43,13 +43,21 @@ own `PASS`.
 
 | Row | Tag | Trigger | Why it exists |
 | --- | --- | --- | --- |
-| `liq_morpho` | **now** | Share-math insolvency | Long-tail markets. Best sidecar EV. |
-| `liq_aave` | **now** | HF < 1 | Depth. Competitive, still real. |
-| `oracle_backrun` | **now** (L1 exec / L2 observe) | Price-feed tx | Same-block vs one-block-late. |
+| `liq_morpho_blue` | **now** | Share-math insolvency | Long-tail isolated markets. Best sidecar EV. |
+| `liq_aave_v3` | **now** | HF < 1, close-factor bounded | Depth today. Competitive, still real. |
+| `liq_aave_v4` | **next** | HF < 1 on a Spoke; repay to target HF | Where liquidity is migrating. Different math: target HF, variable bonus, dust rule. Never a v3 code path. |
+| `oracle_backrun_uncovered` | **now** (L1 exec / L2 observe) | Price-feed tx on an **uncovered** feed | Same-block vs one-block-late, where no protocol auction exists. |
+| `oev_auction_svr` | **next** (observe first) | Auction round on an SVR-covered feed | The covered surface is an auction, not a race. Bid, measure, then decide. |
+| `liq_morpho_v2` | **later** | Term/maturity default | Separate protocol: fixed-term credit, curator callbacks, cross-chain. Own risk memo. |
 | `liq_compound` | **later** | `isLiquidatable` | Two-step storefront. Port when v1 prints. |
 | `liq_maker` | **later** | vat unsafe | Bark + atomic clip take. Discovery is ugly; math is exact. |
 | `liq_spark` / fork-Aaves | **watch** | Same as Aave | Address-profile only if TVL justifies. |
-| `liq_morpho_base` | **next** | Same as Morpho | Register Base addresses after ETH evidence. |
+| `liq_morpho_base` | **next** | Same as Morpho Blue | Register Base addresses after ETH evidence. |
+
+Version is part of row identity. `liq_aave_v3` and `liq_aave_v4` are two rows
+with two adapters, two fixture sets and two qualification records, because v4
+replaced the fixed close factor with target-health-factor repayment and a
+health-scaled bonus. Likewise `liq_morpho_blue` and `liq_morpho_v2`.
 
 ---
 
@@ -58,8 +66,9 @@ own `PASS`.
 | Row | Tag | Trigger | Why it exists |
 | --- | --- | --- | --- |
 | `atomic_arb` | **now** (sim), **next** (live on L2) | New head / large swap | Solver spill uses the same search. Standalone live on Base after Flashblocks. |
-| `flashblock_backrun` | **next** | Preconfirmed state | Searcher tx only, pinned `state_id`. |
+| `flashblock_backrun` | **next** | Preconfirmed state | Searcher tx only, pinned `state_id`. A Flashblock is a 200 ms *hint*, never inclusion evidence. |
 | `mevshare_backrun` | **later** | MEV-Share hint with enough data | Privacy hints; most are redacted. |
+| `timeboost_backrun` | **watch** | Arbitrum express-lane round | Sealed-bid second-price auction for 200 ms priority. Bid is a cost line; needs its own transport + qualification. |
 | `cex_dex_arb` | **watch** | CEX vs DEX | Inventory + custody. Different company unless the book already exists for Mouth B. |
 
 `atomic_arb` search: WETH-anchored simple cycles, max length 3, pool cap,
